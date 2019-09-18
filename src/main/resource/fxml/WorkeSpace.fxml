@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.ToggleButtonGroup?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="mainPane" prefHeight="624.0" prefWidth="831.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.ncku.controller.WorkdspaceController">
+   <top>
+      <MenuBar fx:id="menuBar" BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem fx:id="workspaceMenuItem" mnemonicParsing="false" onAction="#openWorkspace" text="Open Workspace" />
+                  <MenuItem fx:id="improtMenuItem" disable="true" mnemonicParsing="false" onAction="#importGrainImage" text="Improt Image" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <center>
+      <SplitPane minHeight="-Infinity" minWidth="200.0" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <SplitPane dividerPositions="0.7650753768844221" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <items>
+                        <BorderPane fx:id="imgHolder" prefHeight="542.0" prefWidth="513.0" />
+                        <VBox maxWidth="-Infinity" minWidth="-Infinity" prefHeight="561.0" prefWidth="240.0" spacing="8.0">
+                           <children>
+                              <ToggleButtonGroup fx:id="toggleGroup" selectionType="SINGLE">
+                                  <toggles>
+                                      <ToggleButton fx:id="seedButton" selected="true">
+                                      </ToggleButton>
+                                      <ToggleButton fx:id="clearSeedButton">
+                                      </ToggleButton>
+                                    <ToggleButton fx:id="trashSeedButton" layoutX="26.0" layoutY="10.0" />
+                                      <ToggleButton fx:id="shadowButton">
+                                      </ToggleButton>
+                                    <ToggleButton fx:id="clearShadowButton" layoutX="26.0" layoutY="10.0" />
+                                    <ToggleButton fx:id="trashShadowButton" layoutX="42.0" layoutY="10.0" />
+                                  </toggles>
+                              </ToggleButtonGroup>
+                              <Button mnemonicParsing="false" onMouseClicked="#doSegment" prefHeight="32.0" prefWidth="110.0" text="Segment" />
+                              <Button mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="110.0" text="ReSegment" />
+                              <Button fx:id="exportButton" mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="110.0" text="Export" />
+                              <Button fx:id="exportTextButton" layoutX="30.0" layoutY="140.0" mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="110.0" text="Text Export" />
+                              <Button fx:id="exportEllipseButton" layoutX="30.0" layoutY="180.0" mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="110.0" text="Ellipse Export" />
+                              <Label fx:id="markerIndexLabel" text="Marker Index:">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <HBox prefWidth="163.0" spacing="5.0">
+                                 <children>
+                                    <ChoiceBox fx:id="cacheChoiceBox" prefHeight="28.0" prefWidth="66.0" />
+                                    <Button fx:id="saveButton" layoutX="81.0" layoutY="10.0" mnemonicParsing="false" text="Save" />
+                                    <Button fx:id="restoreButton" mnemonicParsing="false" text="Restore" />
+                                 </children>
+                              </HBox>
+                              <HBox layoutX="30.0" layoutY="282.0" prefWidth="163.0" spacing="5.0">
+                                 <children>
+                                    <ChoiceBox fx:id="colorChoiceBox" prefHeight="28.0" prefWidth="66.0" />
+                                    <Button fx:id="applyColorButton" mnemonicParsing="false" text="Apply" />
+                                 </children>
+                              </HBox>
+                              <CheckBox fx:id="markerCheckBox" layoutX="30.0" layoutY="260.0" mnemonicParsing="false" text="Marker Overlay" />
+                              <CheckBox fx:id="segmentCheckBox" mnemonicParsing="false" text="Segment Overlay" />
+                              <CheckBox fx:id="ellipseCheckBox" layoutX="30.0" layoutY="260.0" mnemonicParsing="false" text="Ellipse Overlay" />
+                              <Label alignment="TOP_CENTER" contentDisplay="BOTTOM" nodeOrientation="LEFT_TO_RIGHT" text="Alpha" textOverrun="CLIP">
+                                 <graphic>
+                                    <Slider fx:id="alphaSlider" blockIncrement="0.1" majorTickUnit="1.0" max="3.0" min="1.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
+                                 </graphic>
+                              </Label>
+                              <Label alignment="TOP_CENTER" contentDisplay="BOTTOM" layoutX="30.0" layoutY="180.0" nodeOrientation="LEFT_TO_RIGHT" text="Beta" textOverrun="CLIP">
+                                 <graphic>
+                                    <Slider fx:id="betaSlider" blockIncrement="1.0" minorTickCount="4" showTickLabels="true" showTickMarks="true" />
+                                 </graphic>
+                              </Label>
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets left="20.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                    </items>
+                  </SplitPane>
+               </children></AnchorPane>
+        </items>
+      </SplitPane>
+   </center>
+</BorderPane>
