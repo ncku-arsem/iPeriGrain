@@ -91,6 +91,10 @@ public class WorkSpaceController {
 	private Button restoreButton;
 	@FXML
 	private Button saveButton;
+    @FXML
+    private Button previousButton;
+    @FXML
+    private Button nextButton;
 	@FXML
 	private Label markerIndexLabel;
 	@FXML
@@ -210,6 +214,24 @@ public class WorkSpaceController {
 			if(img!=null)
 				canvas.setBasicImage(img);
 		});
+
+		previousButton.setOnAction(e->{
+		    if(grainVO==null || !markerFileQueue.restorePrevious(workspaceFolder)){
+		        showInfoAlert("Can't load previous result.");
+		        return;
+            }
+		    setMarkerImage();
+            doReSegment(false);
+        });
+
+        nextButton.setOnAction(e->{
+            if(grainVO==null || !markerFileQueue.restoreNext(workspaceFolder)){
+                showInfoAlert("Can't load next result.");
+                return;
+            }
+            setMarkerImage();
+            doReSegment(false);
+        });
 	}
 
 	private void initializeItem(){
@@ -218,6 +240,8 @@ public class WorkSpaceController {
         cacheChoiceBox.getSelectionModel().selectFirst();
         colorChoiceBox.setItems(FXCollections.observableArrayList(ColorMap.values()));
         colorChoiceBox.getSelectionModel().selectFirst();
+        previousButton.setGraphic(FontIcon.of(FontAwesome.CHEVRON_CIRCLE_LEFT, 20));
+        nextButton.setGraphic(FontIcon.of(FontAwesome.CHEVRON_CIRCLE_RIGHT, 20));
     }
 
 	private void initializeToggleButton() {
@@ -266,19 +290,23 @@ public class WorkSpaceController {
             markerIndexLabel.setText("Result Index:"+restoreIndex);
         });
     }
-	
-	public void doReSegment() {
-		doSaveCanvas();
-		grainProcessing.doReSegmentGrainProcessing(grainVO);
-		grainService.saveImage(grainVO);
-		segmentCheckBox.setSelected(setOverlay(grainVO));
-		ellipseCheckBox.setSelected(setEllipse(grainVO) && ellipseCheckBox.isSelected());
-		setMarkerImage();
+
+    public void doReSegment(){
+        doReSegment(true);
+    }
+
+    private void doReSegment(boolean saveCache) {
+        doSaveCanvas(saveCache);
+        grainProcessing.doReSegmentGrainProcessing(grainVO);
+        grainService.saveImage(grainVO);
+        segmentCheckBox.setSelected(setOverlay(grainVO));
+        ellipseCheckBox.setSelected(setEllipse(grainVO) && ellipseCheckBox.isSelected());
+        setMarkerImage();
         markerIndexLabel.setText("Result Index:");
-	}
+    }
 	
 	public void doSegment() {
-		doSaveCanvas();
+		doSaveCanvas(true);
 		grainVO = grainProcessing.doGrainProcessing(workspaceFolder.getAbsolutePath());
 		grainService.saveImage(grainVO);
 		segmentCheckBox.setSelected(setOverlay(grainVO));
@@ -286,11 +314,12 @@ public class WorkSpaceController {
 		setMarkerImage();
 	}
 
-	private void doSaveCanvas() {
+	private void doSaveCanvas(boolean saveCache) {
 		File seedFile = new File(workspaceFolder, MarkerFile.SEED_FILE_NAME);
 		File shadowFile = new File(workspaceFolder, MarkerFile.SHADOW_FILE_NAME);
 		canvas.doSaveCanvas(seedFile, shadowFile);
-		markerFileQueue.add(workspaceFolder);
+		if(saveCache)
+		    markerFileQueue.add(workspaceFolder);
 	}
 	
 	public void importGrainImage(ActionEvent ae) {
@@ -427,6 +456,7 @@ public class WorkSpaceController {
 	private void showInfoAlert(String msg){
         final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, msg, ButtonType.OK);
         alert.setTitle("INFO");
+        alert.setHeaderText("");
         alert.showAndWait();
     }
 }
