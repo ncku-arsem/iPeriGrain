@@ -6,10 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
@@ -23,10 +20,8 @@ public class MarkerFileQueue {
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMddHHmmss");
 	private static final String SEED_PATTERN = "_seed%s.png";
 	private static final String SHADOW_PATTERN = "_shadow%s.png";
-
 	private int capacity = 30;
-	private LinkedList<String> tmpIndexList = new LinkedList<>();
-	private ListIterator<String> tmpItertor = tmpIndexList.listIterator();
+	private NextPreviousList<String> nextPreviousList = new NextPreviousList<>(capacity);
 
 	public File getDefalutSeedFile(File workspaceFolder) {
 		return new File(workspaceFolder, SEED_FILE_NAME);
@@ -56,26 +51,27 @@ public class MarkerFileQueue {
 		File seedDefault = getDefalutSeedFile(workspaceFolder);
 		File shadowDefault = getDefalutShadowFile(workspaceFolder);
 		if(copy(seedDefault, seed) || copy(shadowDefault, shadow)) {
-			if(tmpIndexList.size()>=capacity){
-				tmpIndexList.removeFirst();
+			if(nextPreviousList.isFull()) {
+				Optional<String> removeOptional = nextPreviousList.getLast();
+				if(removeOptional.isPresent())
+					removeFile(workspaceFolder, removeOptional.get());
 			}
-			tmpIndexList.add(index);
-			tmpItertor = tmpIndexList.listIterator();
+			nextPreviousList.add(index);
 		}
 	}
 
 	public boolean restorePrevious(File workspaceFolder){
-		if(!tmpItertor.hasNext())
-			return false;
-		String index = tmpItertor.next();
-		return restoreFromIndex(workspaceFolder, index);
+		Optional<String> index = nextPreviousList.previous();
+		if(index.isPresent())
+			return restoreFromIndex(workspaceFolder, index.get());
+		return false;
 	}
 
 	public boolean restoreNext(File workspaceFolder){
-		if(!tmpItertor.hasPrevious())
-			return false;
-		String index = tmpItertor.previous();
-		return restoreFromIndex(workspaceFolder, index);
+		Optional<String> index = nextPreviousList.next();
+		if(index.isPresent())
+			return restoreFromIndex(workspaceFolder, index.get());
+		return false;
 	}
 
 	private boolean restoreFromIndex(File workspaceFolder, String index){
@@ -94,6 +90,11 @@ public class MarkerFileQueue {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	private void removeFile(File folder, String name){
+		File f = getTmpFile(folder, name);
+		f.delete();
 	}
 	
 	private File getTmpFile(File folder, String name) {

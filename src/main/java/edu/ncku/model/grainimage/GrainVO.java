@@ -16,7 +16,7 @@ public class GrainVO {
 	private Mat oriSegmentedImg;
 	private Mat indexImg;
 	private Mat overlayImg;
-	private Mat ellpiseImg;
+	private Mat ellipseImg;
 	
 	private List<GrainResultVO> results;
 	public Mat getOverlayImg() {
@@ -79,11 +79,11 @@ public class GrainVO {
 	public void setIndexImg(Mat indexImg) {
 		this.indexImg = indexImg;
 	}
-	public Mat getEllpiseImg() {
-		return ellpiseImg;
+	public Mat getEllipseImg() {
+		return ellipseImg;
 	}
-	public void setEllpiseImg(Mat ellpiseImg) {
-		this.ellpiseImg = ellpiseImg;
+	public void setEllipseImg(Mat ellipseImg) {
+		this.ellipseImg = ellipseImg;
 	}
 	public Mat getEnhanceImg() {
 		return enhanceImg;

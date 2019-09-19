@@ -10,11 +10,11 @@ import org.opencv.imgproc.Imgproc;
 import org.springframework.stereotype.Component;
 
 import edu.ncku.Utils;
-import edu.ncku.service.MakerRemover;
+import edu.ncku.service.MarkerRemover;
 import javafx.scene.image.Image;
 
 @Component
-public class MarkerRemoverImpl implements MakerRemover{
+public class MarkerRemoverImpl implements MarkerRemover {
 	
 	@Override
 	public Image removeMaker(double x, double y, Image image) {

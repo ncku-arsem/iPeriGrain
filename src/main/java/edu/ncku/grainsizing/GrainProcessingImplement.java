@@ -271,7 +271,7 @@ public class GrainProcessingImplement implements GrainProcessing{
 	public GrainVO doFitEllipse(GrainVO vo) {
 		findGrainContours(vo);
 		fitEllipse(vo);
-		vo.setEllpiseImg(drawingEllipse(vo));
+		vo.setEllipseImg(drawingEllipse(vo));
 		return vo;
 	}
 	

@@ -49,7 +49,7 @@ public class GrainDAOImplement implements GrainDAO{
 		vo.setSegmentedImg(getImageFromFile(config, GRAIN_RESULT));
 		//can't read 32S image
 		//vo.setIndexImg(getImageFromFile(config, GRAIN_INDEX));
-		vo.setEllpiseImg(getImageFromFile(config, GRAIN_ELLIPSE));
+		vo.setEllipseImg(getImageFromFile(config, GRAIN_ELLIPSE));
 		vo.setOriSegmentedImg(getImageFromFile(config, GRAIN_ORI_SEGMENT));
 		if(vo.getOriginalImg()!=null) {
 			config.setHeight(vo.getOriginalImg().height());
@@ -97,7 +97,7 @@ public class GrainDAOImplement implements GrainDAO{
 		saveImageToFile(vo.getOverlayImg(), GRAIN_OVERLAY, cfg);
 		//can't save 32S image
 		//saveImageToFile(vo.getIndexImg(), GRAIN_INDEX, cfg);
-		saveImageToFile(vo.getEllpiseImg(), GRAIN_ELLIPSE, cfg);
+		saveImageToFile(vo.getEllipseImg(), GRAIN_ELLIPSE, cfg);
 		saveImageToFile(vo.getOriSegmentedImg(), GRAIN_ORI_SEGMENT, cfg);
 		saveGrainConfig(vo.getConfig());
 	}

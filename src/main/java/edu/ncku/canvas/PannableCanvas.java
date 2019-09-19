@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.ncku.service.MakerRemover;
+import edu.ncku.service.MarkerRemover;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.embed.swing.SwingFXUtils;
@@ -33,11 +33,11 @@ public class PannableCanvas extends Pane{
 	private Canvas shadowCanvas;
 	private DrawingAction drawingAction;
 	private ClearTrashAction clearTrashAction;
-	private MakerRemover makerRemover; 
+	private MarkerRemover markerRemover;
 	
-	public PannableCanvas(MakerRemover makerRemover) {
+	public PannableCanvas(MarkerRemover markerRemover) {
 		super();
-		this.makerRemover = makerRemover;
+		this.markerRemover = markerRemover;
 		setStyle("-fx-background-color: lightgrey;");
 		resize(600, 600);
 		setPrefSize(600, 600);
@@ -273,7 +273,7 @@ public class PannableCanvas extends Pane{
 				return;
 			if(clearTrashAction == ClearTrashAction.SEED_TRASH || clearTrashAction == ClearTrashAction.SHADOW_TRASH) {
 				Image image = getWritableImage(clearTrashAction==ClearTrashAction.SEED_TRASH ? seedCanvas:shadowCanvas);
-				image = makerRemover.removeMaker(event.getX(), event.getY(), image);
+				image = markerRemover.removeMaker(event.getX(), event.getY(), image);
 				if(clearTrashAction.equals(ClearTrashAction.SEED_TRASH)) {
 					setSeedImage(image);
 				}else {

@@ -26,7 +26,7 @@ public class Main extends Application {
 	@Override
 	public void init() throws Exception {
 		springContext = SpringApplication.run(Main.class);
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/resource/fxml/WorkeSpace.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/resource/fxml/WorkSpace.fxml"));
 		fxmlLoader.setControllerFactory(springContext::getBean);
 		rootNode = fxmlLoader.load();
 	}
