@@ -245,7 +245,6 @@ public class PannableCanvas extends Pane{
 	
 	private WritableImage getWritableImage(Canvas canvas) {
 		canvas.setVisible(true);
-		System.out.println();
 		WritableImage writableImage = new WritableImage((int)canvas.getWidth(), (int)canvas.getHeight());
 		SnapshotParameters sp = new SnapshotParameters();
 	    sp.setFill(Color.TRANSPARENT);

@@ -16,16 +16,16 @@ public class MarkerFileStore {
 	private static final String SEED_STORE_PATTERN = "_seed%s.png";
 	private static final String SHADOW_STORE_PATTERN = "_shadow%s.png";
 
-	public File getDefalutSeedFile(File workspaceFolder) {
+	public File getDefaultSeedFile(File workspaceFolder) {
 		return new File(workspaceFolder, SEED_FILE_NAME);
 	}
 	
-	public File getDefalutShadowFile(File workspaceFolder) {
+	public File getDefaultShadowFile(File workspaceFolder) {
 		return new File(workspaceFolder, SHADOW_FILE_NAME);
 	}
 	
 	public void copyDefaultToSpecific(File workspaceFolder, int index) {
-		File seedSource = getDefalutSeedFile(workspaceFolder);
+		File seedSource = getDefaultSeedFile(workspaceFolder);
 		if(seedSource.canRead()) {
 			try {
 				File seed = getStoreFile(workspaceFolder, String.format(SEED_STORE_PATTERN, index));
@@ -36,7 +36,7 @@ public class MarkerFileStore {
 				ex.printStackTrace();
 			}
 		}
-		File shadowSource = getDefalutShadowFile(workspaceFolder);
+		File shadowSource = getDefaultShadowFile(workspaceFolder);
 		if(shadowSource.canRead()) {
 			try {
 				File shadow = getStoreFile(workspaceFolder, String.format(SHADOW_STORE_PATTERN, index));
@@ -49,7 +49,7 @@ public class MarkerFileStore {
 		}
 	}
 	
-	public boolean copIndexToDefault(File workspaceFolder, int index) {
+	public boolean copyIndexToDefault(File workspaceFolder, int index) {
 		File seed = getStoreFile(workspaceFolder, String.format(SEED_STORE_PATTERN, index));
 		File shadow = getStoreFile(workspaceFolder, String.format(SHADOW_STORE_PATTERN, index));
 		if(!seed.canRead() && !shadow.canRead())
@@ -57,7 +57,7 @@ public class MarkerFileStore {
 		boolean success = false;
 		try {
 			if(seed.canRead()) {
-				File defaultSeed = getDefalutSeedFile(workspaceFolder);
+				File defaultSeed = getDefaultSeedFile(workspaceFolder);
 				Files.copy(seed.toPath(), defaultSeed.toPath(), StandardCopyOption.REPLACE_EXISTING);
 				success = true;
 			}
@@ -65,9 +65,9 @@ public class MarkerFileStore {
 			e.printStackTrace();
 		}
 		try {
-			if(seed.canRead()) {
-				File defaultSeed = getDefalutSeedFile(workspaceFolder);
-				Files.copy(seed.toPath(), defaultSeed.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			if(shadow.canRead()) {
+				File defaultShadow = getDefaultShadowFile(workspaceFolder);
+				Files.copy(shadow.toPath(), defaultShadow.toPath(), StandardCopyOption.REPLACE_EXISTING);
 				success = true;
 			}
 		} catch (IOException e) {

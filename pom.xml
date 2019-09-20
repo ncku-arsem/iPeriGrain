@@ -26,6 +26,25 @@
 					<mainClass>edu.ncku.Main</mainClass>
 				</configuration>
 			</plugin>
+<!--			<plugin>-->
+<!--				<artifactId>maven-assembly-plugin</artifactId>-->
+<!--				<version>3.1.1</version>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<phase>package</phase>-->
+<!--						<goals>-->
+<!--							<goal>single</goal>-->
+<!--						</goals>-->
+<!--						<configuration>-->
+<!--							<archive>-->
+<!--								<manifest>-->
+<!--									<mainClass>edu.ncku.Main</mainClass>-->
+<!--								</manifest>-->
+<!--							</archive>-->
+<!--						</configuration>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 		</plugins>
 		<resources>
 			<resource>

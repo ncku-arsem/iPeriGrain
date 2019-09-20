@@ -2,7 +2,7 @@ package edu.ncku.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -149,6 +149,7 @@ public class WorkSpaceController {
 		initializeToggleButton();
 		initializeCanvas();
         initializeRestore();
+		setNextPrevious();
 
 		mainPane.addEventFilter( KeyEvent.KEY_PRESSED, e->{
 			if(KeyCode.F==e.getCode())
@@ -281,7 +282,7 @@ public class WorkSpaceController {
                 markerIndexLabel.setText("Result Index:");
                 return;
             }
-            if(!markerFileStore.copIndexToDefault(workspaceFolder, restoreIndex)) {
+            if(!markerFileStore.copyIndexToDefault(workspaceFolder, restoreIndex)) {
                 showInfoAlert("Restore Failed.");
                 return;
             }
@@ -290,6 +291,11 @@ public class WorkSpaceController {
             markerIndexLabel.setText("Result Index:"+restoreIndex);
         });
     }
+
+    private void setNextPrevious(){
+		nextButton.setDisable(!markerFileQueue.hasNext());
+		previousButton.setDisable(!markerFileQueue.hasPrevious());
+	}
 
     public void doReSegment(){
         doReSegment(true);
@@ -303,6 +309,7 @@ public class WorkSpaceController {
         ellipseCheckBox.setSelected(setEllipse(grainVO) && ellipseCheckBox.isSelected());
         setMarkerImage();
         markerIndexLabel.setText("Result Index:");
+		setNextPrevious();
     }
 	
 	public void doSegment() {
@@ -312,6 +319,7 @@ public class WorkSpaceController {
 		segmentCheckBox.setSelected(setOverlay(grainVO));
 		ellipseCheckBox.setSelected(setEllipse(grainVO));
 		setMarkerImage();
+		setNextPrevious();
 	}
 
 	private void doSaveCanvas(boolean saveCache) {
@@ -412,10 +420,12 @@ public class WorkSpaceController {
 	private boolean setSeedCanvas() {
 		File seedFile = new File(workspaceFolder, "_seed.png");
 		if(seedFile.exists()) {
-			try {
-				canvas.setSeedImage(new Image(new FileInputStream(seedFile)));
+			try(FileInputStream inputStream = new FileInputStream(seedFile)) {
+				canvas.setSeedImage(new Image(inputStream));
 				return true;
-			} catch (FileNotFoundException e) {e.printStackTrace();}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}else {
 			canvas.clearSeedCanvas();
 		}
@@ -425,10 +435,12 @@ public class WorkSpaceController {
 	private boolean setShadowCanvas() {
 		File shadowFile = new File(workspaceFolder, "_shadow.png");
 		if(shadowFile.exists()) {
-			try {
-				canvas.setShadowImage(new Image(new FileInputStream(shadowFile)));
+			try(FileInputStream inputStream = new FileInputStream(shadowFile)) {
+				canvas.setShadowImage(new Image(inputStream));
 				return true;
-			} catch (FileNotFoundException e) {e.printStackTrace();}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}else {
 			canvas.clearShadowImage();
 		}

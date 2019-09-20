@@ -42,6 +42,15 @@ public class MarkerFileQueue {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		add(workspaceFolder);
+	}
+
+	public boolean hasNext(){
+		return nextPreviousList.hasNext();
+	}
+
+	public boolean hasPrevious(){
+		return nextPreviousList.hasPrevious();
 	}
 	
 	public void add(File workspaceFolder) {
@@ -50,7 +59,9 @@ public class MarkerFileQueue {
 		File shadow = getTmpFile(workspaceFolder, String.format(SHADOW_PATTERN, index));
 		File seedDefault = getDefalutSeedFile(workspaceFolder);
 		File shadowDefault = getDefalutShadowFile(workspaceFolder);
-		if(copy(seedDefault, seed) || copy(shadowDefault, shadow)) {
+		boolean copySeed = copy(seedDefault, seed);
+		boolean copyShadow = copy(shadowDefault, shadow);
+		if(copySeed || copyShadow) {
 			if(nextPreviousList.isFull()) {
 				Optional<String> removeOptional = nextPreviousList.getLast();
 				if(removeOptional.isPresent())
@@ -79,7 +90,9 @@ public class MarkerFileQueue {
 		File shadow = getTmpFile(workspaceFolder, String.format(SHADOW_PATTERN, index));
 		File seedDefault = getDefalutSeedFile(workspaceFolder);
 		File shadowDefault = getDefalutShadowFile(workspaceFolder);
-		return copy(seed, seedDefault) || copy(shadow, shadowDefault);
+		boolean copySeed = copy(seed, seedDefault);
+		boolean copyShadow = copy(shadow, shadowDefault);
+		return copySeed || copyShadow;
 	}
 
 	private boolean copy(File src, File dst){
