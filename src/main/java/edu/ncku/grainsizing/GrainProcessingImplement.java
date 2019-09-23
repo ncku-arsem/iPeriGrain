@@ -1,37 +1,27 @@
 package edu.ncku.grainsizing;
 
+import edu.ncku.model.grainimage.GrainResultVO;
+import edu.ncku.model.grainimage.GrainService;
+import edu.ncku.model.grainimage.GrainVO;
+import edu.ncku.model.tempmarker.TempMarkerService;
+import edu.ncku.model.tempmarker.TempMarkerVO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.opencv.core.*;
+import org.opencv.core.Core.MinMaxLocResult;
+import org.opencv.imgproc.Imgproc;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import org.opencv.core.Core;
-import org.opencv.core.Core.MinMaxLocResult;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
-import org.opencv.core.Point;
-import org.opencv.core.RotatedRect;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import edu.ncku.model.grainimage.GrainResultVO;
-import edu.ncku.model.grainimage.GrainService;
-import edu.ncku.model.grainimage.GrainVO;
-import edu.ncku.model.tempmarker.TempMarkerService;
-import edu.ncku.model.tempmarker.TempMarkerVO;
-
 @Component
 public class GrainProcessingImplement implements GrainProcessing{
-	
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LogManager.getLogger(GrainProcessingImplement.class.getClass());
 	private final static int OPENCV_FITELLIPSE_LIMIT = 5;
 	
 	@Autowired

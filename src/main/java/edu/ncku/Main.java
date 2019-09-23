@@ -1,16 +1,13 @@
 package edu.ncku;
-	
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
 
-import edu.ncku.store.MarkerFileQueue;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
 public class Main extends Application {
@@ -22,7 +19,6 @@ public class Main extends Application {
 		nu.pattern.OpenCV.loadShared();
 		Application.launch(args);
 	}
-
 	@Override
 	public void init() throws Exception {
 		springContext = SpringApplication.run(Main.class);

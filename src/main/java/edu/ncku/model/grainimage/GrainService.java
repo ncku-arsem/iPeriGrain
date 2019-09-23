@@ -1,17 +1,18 @@
 package edu.ncku.model.grainimage;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.opencv.core.Core;
 import org.opencv.core.Core.MinMaxLocResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GrainService {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LogManager.getLogger(GrainService.class.getClass());
 	@Autowired
 	private GrainDAO grainDAO;
 	

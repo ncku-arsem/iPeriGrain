@@ -1,26 +1,6 @@
 package edu.ncku.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import edu.ncku.store.MarkerFile;
-import edu.ncku.store.MarkerFileStore;
-import javafx.scene.control.*;
-import org.kordamp.ikonli.fontawesome.FontAwesome;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
-
 import com.gluonhq.charm.glisten.control.ToggleButtonGroup;
-
 import edu.ncku.Utils;
 import edu.ncku.canvas.DrawingAction;
 import edu.ncku.canvas.PannableCanvas;
@@ -33,13 +13,16 @@ import edu.ncku.model.grainimage.GrainResultVO;
 import edu.ncku.model.grainimage.GrainService;
 import edu.ncku.model.grainimage.GrainVO;
 import edu.ncku.model.workspace.WorkspaceService;
-import edu.ncku.store.MarkerFileQueue;
 import edu.ncku.service.ColorMap;
 import edu.ncku.service.ColorMapper;
 import edu.ncku.service.MarkerRemover;
+import edu.ncku.store.MarkerFile;
+import edu.ncku.store.MarkerFileQueue;
+import edu.ncku.store.MarkerFileStore;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -49,10 +32,25 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.kordamp.ikonli.fontawesome.FontAwesome;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 public class WorkSpaceController {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LogManager.getLogger(WorkSpaceController.class.getClass());
 	@FXML
 	private BorderPane mainPane;
 	@FXML 
@@ -349,6 +347,7 @@ public class WorkSpaceController {
 		String workspace = selectWorkspace();
 		if(!workspaceService.openWorkspace(workspace))
 			return;
+		markerFileQueue.clearTemp(workspaceFolder);
 		workspaceMenuItem.setDisable(true);
 		workspaceFolder = new File(workspace);
 		grainVO = grainService.getGrainVO(workspace);
@@ -362,7 +361,6 @@ public class WorkSpaceController {
 		segmentCheckBox.setSelected(setOverlay(grainVO));
 		ellipseCheckBox.setSelected(setEllipse(grainVO));
 		setMarkerImage();
-		markerFileQueue.clearTemp(workspaceFolder);
 	}
 	
 	private void setMarkerImage() {

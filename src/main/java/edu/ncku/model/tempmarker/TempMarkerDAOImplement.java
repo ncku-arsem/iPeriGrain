@@ -1,17 +1,16 @@
 package edu.ncku.model.tempmarker;
 
-import java.io.File;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.io.File;
 
 @Component
 public class TempMarkerDAOImplement implements TempMarkerDAO{
-	
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LogManager.getLogger(TempMarkerDAOImplement.class.getClass());
 	
 	@Override
 	public TempMarkerVO getTempMarker(String workspace, String name) {

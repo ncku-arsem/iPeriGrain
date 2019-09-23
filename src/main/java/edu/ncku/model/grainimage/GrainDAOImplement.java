@@ -1,23 +1,18 @@
 package edu.ncku.model.grainimage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
+import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.google.gson.Gson;
+import java.io.*;
 
 @Component
 public class GrainDAOImplement implements GrainDAO{
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LogManager.getLogger(GrainDAOImplement.class.getClass());
 	
 	private Gson gson = new Gson();
 	private static final String GRAIN_CONFIG = "config.json";

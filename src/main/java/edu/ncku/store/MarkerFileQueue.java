@@ -33,16 +33,14 @@ public class MarkerFileQueue {
 
 	public void clearTemp(File workspaceFolder){
 		File folder = new File(workspaceFolder, TEMP_FOLDER);
-		if(!folder.exists()){
-			folder.mkdir();
+		if(!folder.exists())
 			return;
-		}
 		try {
 			FileUtils.cleanDirectory(folder);
+			add(workspaceFolder);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		add(workspaceFolder);
 	}
 
 	public boolean hasNext(){
@@ -54,6 +52,7 @@ public class MarkerFileQueue {
 	}
 	
 	public void add(File workspaceFolder) {
+		checkAndCreateFolder(workspaceFolder);
 		String index = LocalDateTime.now().format(dateTimeFormatter);
 		File seed = getTmpFile(workspaceFolder, String.format(SEED_PATTERN, index));
 		File shadow = getTmpFile(workspaceFolder, String.format(SHADOW_PATTERN, index));
@@ -96,6 +95,8 @@ public class MarkerFileQueue {
 	}
 
 	private boolean copy(File src, File dst){
+		if(!src.exists())
+			return false;
 		try {
 			Files.copy(src.toPath(), dst.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			return true;
@@ -103,6 +104,12 @@ public class MarkerFileQueue {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	private void checkAndCreateFolder(File folder){
+		File f = new File(folder, TEMP_FOLDER);
+		if(!f.exists())
+			f.mkdirs();
 	}
 
 	private void removeFile(File folder, String name){

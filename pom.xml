@@ -26,25 +26,6 @@
 					<mainClass>edu.ncku.Main</mainClass>
 				</configuration>
 			</plugin>
-<!--			<plugin>-->
-<!--				<artifactId>maven-assembly-plugin</artifactId>-->
-<!--				<version>3.1.1</version>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<phase>package</phase>-->
-<!--						<goals>-->
-<!--							<goal>single</goal>-->
-<!--						</goals>-->
-<!--						<configuration>-->
-<!--							<archive>-->
-<!--								<manifest>-->
-<!--									<mainClass>edu.ncku.Main</mainClass>-->
-<!--								</manifest>-->
-<!--							</archive>-->
-<!--						</configuration>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--			</plugin>-->
 		</plugins>
 		<resources>
 			<resource>
@@ -73,7 +54,23 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 			<version>2.1.1.RELEASE</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.11.1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.kordamp.ikonli</groupId>
 			<artifactId>ikonli-javafx</artifactId>

@@ -1,14 +1,5 @@
 package edu.ncku.canvas;
 
-import java.awt.image.RenderedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.ncku.service.MarkerRemover;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -22,9 +13,17 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.imageio.ImageIO;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class PannableCanvas extends Pane{
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LogManager.getLogger(PannableCanvas.class.getClass());
+
 	private DoubleProperty currentScale = new SimpleDoubleProperty(1.0);
 	private Canvas basicCanvas;
 	private Canvas overlayCanvas;
