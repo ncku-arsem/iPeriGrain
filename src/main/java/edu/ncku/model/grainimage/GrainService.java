@@ -17,6 +17,7 @@ public class GrainService {
 	private GrainDAO grainDAO;
 	
 	public GrainVO getGrainVO(String workspace) {
+		logger.info("getGrainVO:{}", workspace);
 		GrainConfig config = grainDAO.getGrainConfig(workspace);
 		if(config==null)
 			config = grainDAO.getInitGrainConfig(workspace);

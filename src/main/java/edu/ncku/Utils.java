@@ -47,8 +47,7 @@ public final class Utils{
 			Image image = SwingFXUtils.toFXImage(matToBufferedImage(frame), null);
 			return image;
 		}catch (Exception e){
-			System.err.println("Cannot convert the Mat obejct: " + e.getMessage());
-			return null;
+			throw new RuntimeException("Cannot convert the Mat obejct: " + e.getMessage());
 		}
 	}
 	

@@ -5,5 +5,6 @@ import org.opencv.core.Mat;
 import javafx.scene.image.Image;
 
 public interface ColorMapper {	
-	public Image convertColor(ColorMap colorMap, Mat mat);
+	Image convertColor(ColorMap colorMap, Mat mat);
+	Mat convertColorMat(ColorMap colorMap, Mat mat);
 }

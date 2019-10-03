@@ -20,4 +20,13 @@ public class ColorMapperImpl implements ColorMapper{
         Imgproc.applyColorMap(mat, colorMat, colorMap.getColor());
 		return Utils.mat2Image(colorMat);
 	}
+
+	@Override
+	public Mat convertColorMat(ColorMap colorMap, Mat mat) {
+		if(colorMap.getColor()<0)
+			return mat;
+		Mat colorMat = new Mat();
+		Imgproc.applyColorMap(mat, colorMat, colorMap.getColor());
+		return colorMat;
+	}
 }

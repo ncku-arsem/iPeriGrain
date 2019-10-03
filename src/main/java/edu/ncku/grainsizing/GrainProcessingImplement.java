@@ -66,6 +66,7 @@ public class GrainProcessingImplement implements GrainProcessing{
 		Core.bitwise_not(vo.getNonGrainImg(), invertNonGrain);
 		Mat dis = new Mat();
 		Imgproc.distanceTransform(invertNonGrain, dis, Imgproc.CV_DIST_L2, 3);
+		invertNonGrain.release();
 		return dis;
 	}
 	
@@ -74,6 +75,7 @@ public class GrainProcessingImplement implements GrainProcessing{
 		Mat grainMark = new Mat();
 		Mat dis8bit = this.convertTo8UC1(vo.getDisMapImg());
 		Imgproc.threshold(dis8bit, grainMark, 50, 255, Imgproc.THRESH_BINARY);
+		dis8bit.release();
 		return grainMark;
 	}
 	
@@ -195,6 +197,8 @@ public class GrainProcessingImplement implements GrainProcessing{
 		Mat markImg = new Mat();
 		Imgproc.erode(vo.getMarkImg(), markImg, element);
 		Core.bitwise_or(markImg, mergeImg, resultMat);
+		markImg.release();
+		mergeImg.release();
 		return resultMat;
 	}
 	
@@ -206,6 +210,8 @@ public class GrainProcessingImplement implements GrainProcessing{
 		Mat newMarker = floodFillAsBlack(vo.getMarkImg(), splitImg);
 		Mat resultMat = new Mat();
 		Core.bitwise_or(newMarker, splitImg, resultMat);
+		newMarker.release();
+		splitImg.release();
 		return resultMat;
 	}
 	
@@ -219,12 +225,12 @@ public class GrainProcessingImplement implements GrainProcessing{
 		List<byte[]> indexAreaList = new ArrayList<>(maxIndex);
 		for(int i=0;i<maxIndex;i++)
 			indexAreaList.add(new byte[(int)indexMat.total()]);
-		int [] imageArray = new int[(int)indexMat.total()]; 
+		int [] imageArray = new int[(int)indexMat.total()];
 		vo.getIndexImg().get(0, 0, imageArray);
         for (int i = 0; i < indexMat.rows(); i++) {
             for (int j = 0; j < indexMat.cols(); j++) {
                 int index = imageArray[(i*cols) + j];
-                if(index<=0 || index > vo.getConfig().getMaxIndex()) 
+                if(index<=0 || index > vo.getConfig().getMaxIndex())
                 	continue;
                 indexAreaList.get(index-1)[(i*cols)+j] = (byte) 255;
             }
@@ -247,6 +253,7 @@ public class GrainProcessingImplement implements GrainProcessing{
 			v.setContour(m);
 			return v;
 		}).collect(Collectors.toList()));
+		dst.release();
 	}
 	
 	@Override
@@ -277,10 +284,10 @@ public class GrainProcessingImplement implements GrainProcessing{
 	
 	@Override
 	public GrainVO enhaceToShow(GrainVO vo) {
-		if(vo.getOriginalImg()==null || vo.getConfig()==null) 
+		if(vo.getDisMapImg()==null || vo.getConfig()==null)
 			return vo;
-		Mat newImage = Mat.zeros(vo.getOriginalImg().size(), vo.getOriginalImg().type());
-		vo.getOriginalImg().convertTo(newImage, -1, vo.getConfig().getAlpha(), vo.getConfig().getBeta());
+		Mat newImage = Mat.zeros(vo.getDisMapImg().size(), vo.getDisMapImg().type());
+		vo.getDisMapImg().convertTo(newImage, -1, vo.getConfig().getAlpha(), vo.getConfig().getBeta());
 		vo.setEnhanceImg(newImage);
 		return vo;
 	}

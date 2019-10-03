@@ -54,8 +54,12 @@ public class GrainDAOImplement implements GrainDAO{
 	}
 	
 	private Mat getOriginalImageFromFile(GrainConfig cfg) {
+		logger.info("getOriginalImageFromFile:{}", cfg);
 		Mat m = getImageFromFile(cfg, GRAIN_ORI_8Bit);
-		if(m!=null) return m;
+		if(m!=null) {
+			logger.info("getOriginalImageFromFile:{}", cfg);
+			return m;
+		}
 		return getImageFromFile(cfg, GRAIN_ORI);
 	}
 
@@ -63,8 +67,10 @@ public class GrainDAOImplement implements GrainDAO{
 	public GrainConfig getGrainConfig(String workspace) {
 		File configFile = getConfigFile(workspace);
 		GrainConfig config = null;
-		if(!configFile.exists())
+		if(!configFile.exists()) {
+			logger.info("getGrainConfig config file not exists.");
 			return config;
+		}
 		FileReader fr = null;
 		try {
 			fr = new FileReader(configFile);

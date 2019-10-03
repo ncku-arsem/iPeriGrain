@@ -7,6 +7,7 @@ import org.opencv.core.Mat;
 public class GrainVO {
 	private GrainConfig config = new GrainConfig();
 	private Mat originalImg;
+	private Mat displayImg;
 	private Mat enhanceImg;
 	private Mat smoothImg;
 	private Mat nonGrainImg;
@@ -35,7 +36,14 @@ public class GrainVO {
 		return originalImg;
 	}
 	public void setOriginalImg(Mat originalImg) {
+		this.disMapImg = originalImg;
 		this.originalImg = originalImg;
+	}
+	public void setDisplayImg(Mat disMapImg){
+		this.disMapImg = disMapImg;
+	}
+	public Mat getDisplayImg(){
+		return displayImg;
 	}
 	public Mat getSmoothImg() {
 		return smoothImg;

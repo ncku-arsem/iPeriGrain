@@ -36,6 +36,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.opencv.core.Mat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -206,10 +207,12 @@ public class WorkSpaceController {
 		});
 
 		applyColorButton.setOnAction(e->{
-			if(grainVO==null || grainVO.getOriginalImg()==null)
+			if(grainVO==null || grainVO.getDisMapImg()==null)
 				return;
 			ColorMap colorMap = colorChoiceBox.getValue();
-			Image img = colorMapper.convertColor(colorMap, grainVO.getOriginalImg());
+			Mat mat = colorMapper.convertColorMat(colorMap, grainVO.getOriginalImg());
+			grainVO.setDisMapImg(mat);
+			Image img = Utils.mat2Image(mat);
 			if(img!=null)
 				canvas.setBasicImage(img);
 		});
@@ -332,7 +335,7 @@ public class WorkSpaceController {
 		if(workspaceFolder==null || !workspaceFolder.isDirectory())
 			return;
 		workspaceMenuItem.setDisable(true);
-		selectImageToImoprt();
+		selectImageToImport(workspaceFolder);
 		grainVO = grainService.getGrainVO(workspaceFolder.getAbsolutePath());
 		if(grainVO==null) 
 			return;
@@ -396,7 +399,7 @@ public class WorkSpaceController {
 		try {
 			overlay = Utils.mat2Image(vo.getOverlayImg());
 		}catch(Exception e) {
-			e.printStackTrace();
+			logger.error("setOverlay failed:{}", e.getMessage());
 			return false;
 		}
 		return canvas.setOverlay(overlay);
@@ -409,7 +412,7 @@ public class WorkSpaceController {
 		try {
 			ellipse = Utils.mat2Image(vo.getEllipseImg());
 		}catch(Exception e) {
-			e.printStackTrace();
+			logger.error("setEllipse failed:{}", e.getMessage());
 			return false;
 		}
 		return canvas.setEllipse(ellipse);
@@ -422,7 +425,7 @@ public class WorkSpaceController {
 				canvas.setSeedImage(new Image(inputStream));
 				return true;
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("setSeedCanvas failed:{}", e.getMessage());
 			}
 		}else {
 			canvas.clearSeedCanvas();
@@ -437,7 +440,7 @@ public class WorkSpaceController {
 				canvas.setShadowImage(new Image(inputStream));
 				return true;
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("setShadowCanvas failed:{}", e.getMessage());
 			}
 		}else {
 			canvas.clearShadowImage();
@@ -454,11 +457,10 @@ public class WorkSpaceController {
 		return selectedDirectory==null ? "":selectedDirectory.getAbsolutePath();
 	}
 	
-	private boolean selectImageToImoprt() {
+	private boolean selectImageToImport(File workspaceFolder) {
 		Stage stage = (Stage) menuBar.getScene().getWindow();
 		FileChooser chooser = new FileChooser();
-		File defaultDirectory = new File("/");
-		chooser.setInitialDirectory(defaultDirectory);
+		chooser.setInitialDirectory(workspaceFolder);
 		File imageFile = chooser.showOpenDialog(stage);
 		return workspaceService.importImageToWorkspace(workspaceFolder.getAbsolutePath(), imageFile.getAbsolutePath());
 	}

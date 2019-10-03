@@ -17,6 +17,7 @@ import edu.ncku.grainsizing.export.GrainShape;
 import edu.ncku.model.grainimage.GrainResultVO;
 
 public class GrainResultAdapter implements GrainShape{
+	private static final double SCALE = 100.0;
 	private static final GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
 	private Polygon polygon;
 	private RotatedRect ellipse;
@@ -27,9 +28,9 @@ public class GrainResultAdapter implements GrainShape{
 		
 		List<Coordinate> list = new LinkedList<Coordinate>();
 		for(Point point:pointArray) 
-			list.add(new Coordinate(point.x, height - point.y));
+			list.add(new Coordinate(point.x/SCALE, (height - point.y)/SCALE));
 		Point firstOne = pointArray[0];
-		list.add(new Coordinate(firstOne.x, height - firstOne.y));
+		list.add(new Coordinate(firstOne.x/SCALE, (height - firstOne.y)/SCALE));
 		LinearRing shell = geometryFactory.createLinearRing(list.toArray(new Coordinate[list.size()]));
 		polygon = geometryFactory.createPolygon(shell, null);
 		ellipse = vo.getEllipse();
@@ -43,22 +44,22 @@ public class GrainResultAdapter implements GrainShape{
 
 	@Override
 	public double getCenterX() {
-		return ellipse.center.x;
+		return ellipse.center.x/SCALE;
 	}
 
 	@Override
 	public double getCenterY() {
-		return height - ellipse.center.y;
+		return (height - ellipse.center.y)/SCALE;
 	}
 
 	@Override
 	public double getMajorAxis() {
-		return ellipse.size.height;
+		return ellipse.size.height/SCALE;
 	}
 
 	@Override
 	public double getMinorAxis() {
-		return ellipse.size.width;
+		return ellipse.size.width/SCALE;
 	}
 
 	@Override
