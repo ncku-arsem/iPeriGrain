@@ -5,6 +5,7 @@ import edu.ncku.Utils;
 import edu.ncku.canvas.DrawingAction;
 import edu.ncku.canvas.PannableCanvas;
 import edu.ncku.canvas.SceneGestures;
+import edu.ncku.grainsizing.GrainParam;
 import edu.ncku.grainsizing.GrainProcessing;
 import edu.ncku.grainsizing.export.GrainExport;
 import edu.ncku.grainsizing.export.GrainShape;
@@ -85,6 +86,8 @@ public class WorkSpaceController {
 	@FXML
 	private Button exportEllipseButton;
 	@FXML
+	private Button fitEllipseButton;
+	@FXML
 	private ChoiceBox<Integer> cacheChoiceBox;
 	@FXML
 	private Button restoreButton;
@@ -105,11 +108,13 @@ public class WorkSpaceController {
 	@FXML
 	private CheckBox segmentCheckBox;
 	@FXML
-	private CheckBox ellipseCheckBox;
-	@FXML
 	private Slider alphaSlider;
 	@FXML
 	private Slider betaSlider;
+	@FXML
+	private TextField minThreshold;
+	@FXML
+	private TextField maxThreshold;
 
 	@Autowired
 	private WorkspaceService workspaceService;
@@ -141,7 +146,7 @@ public class WorkSpaceController {
 	private PannableCanvas canvas;
 	private File workspaceFolder;
 	private GrainVO grainVO;
-	
+
 	public void initialize() {
 		logger.info("initialize");
         initializeItem();
@@ -160,37 +165,38 @@ public class WorkSpaceController {
 		segmentCheckBox.selectedProperty().addListener((ov,old_val, new_val)-> {
 			canvas.setOverlayShow(new_val);
 		});
-		mainPane.addEventFilter( KeyEvent.KEY_PRESSED, e->{
-			if(KeyCode.D==e.getCode())
-				ellipseCheckBox.setSelected(!ellipseCheckBox.isSelected());
-		});
-		ellipseCheckBox.selectedProperty().addListener((ov,old_val, new_val)-> {
-			canvas.setEllipseShow(new_val);
-		});
 
 		exportButton.setOnAction(e->{
 			FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("SHP files (*.shp)", "*.shp"));
+			fileChooser.setInitialFileName("grain-export.shp");
             Stage stage = (Stage) exportButton.getScene().getWindow();
             File file = fileChooser.showSaveDialog(stage);
             if(file!=null)
-            	doExport(file, grainExport);
+				doExport(file, grainExport);
 		});
 		exportTextButton.setOnAction(e->{
 			FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt"));
+			fileChooser.setInitialFileName("grain-export.txt");
             Stage stage = (Stage) exportTextButton.getScene().getWindow();
             File file = fileChooser.showSaveDialog(stage);
             if(file!=null)
-            	doExport(file, grainTextExport);
+				doExport(file, grainTextExport);
 		});
 		exportEllipseButton.setOnAction(e->{
 			FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("SHP files (*.shp)", "*.shp"));
+			fileChooser.setInitialFileName("grain-export-ellipse.shp");
             Stage stage = (Stage) exportEllipseButton.getScene().getWindow();
             File file = fileChooser.showSaveDialog(stage);
             if(file!=null)
-            	doExport(file, grainEllipseExport);
+				doExport(file, grainEllipseExport);
+
+		});
+		fitEllipseButton.setOnAction(e -> {
+			grainProcessing.doFitEllipse(grainVO);
+			setEllipse(grainVO);
 		});
 
 		alphaSlider.valueProperty().addListener((ob, oldVal, newVal)->{
@@ -307,20 +313,23 @@ public class WorkSpaceController {
         grainProcessing.doReSegmentGrainProcessing(grainVO);
         grainService.saveImage(grainVO);
         segmentCheckBox.setSelected(setOverlay(grainVO));
-        ellipseCheckBox.setSelected(setEllipse(grainVO) && ellipseCheckBox.isSelected());
         setMarkerImage();
         markerIndexLabel.setText("Result Index:");
 		setNextPrevious();
+		setEllipse(grainVO);
     }
 	
 	public void doSegment() {
 		doSaveCanvas(true);
-		grainVO = grainProcessing.doGrainProcessing(workspaceFolder.getAbsolutePath());
+		GrainParam param = new GrainParam();
+		param.setCannyMaxThreshold(Integer.parseInt(minThreshold.getText()));
+		param.setCannyMaxThreshold(Integer.parseInt(maxThreshold.getText()));
+		grainVO = grainProcessing.doGrainProcessing(workspaceFolder.getAbsolutePath(), param);
 		grainService.saveImage(grainVO);
 		segmentCheckBox.setSelected(setOverlay(grainVO));
-		ellipseCheckBox.setSelected(setEllipse(grainVO));
 		setMarkerImage();
 		setNextPrevious();
+		setEllipse(grainVO);
 	}
 
 	private void doSaveCanvas(boolean saveCache) {
@@ -362,7 +371,6 @@ public class WorkSpaceController {
 		Image image = Utils.mat2Image(grainVO.getOriginalImg());
 		canvas.initCanvas(image);
 		segmentCheckBox.setSelected(setOverlay(grainVO));
-		ellipseCheckBox.setSelected(setEllipse(grainVO));
 		setMarkerImage();
 	}
 	
@@ -384,12 +392,14 @@ public class WorkSpaceController {
 	}
 
 	private void doExport(File exportFile, GrainExport grainExport) {
+		grainProcessing.doFitEllipse(grainVO);
 		List<GrainResultVO> list = grainVO.getResults();
 		List<GrainShape> grainShapes = new LinkedList<>();
 		for(GrainResultVO vo:list) {
 			grainShapes.add(new GrainResultAdapter(vo, grainVO.getConfig().getHeight()));
 		}
 		grainExport.doExportGrain(grainShapes, exportFile.getAbsolutePath());
+		setEllipse(grainVO);
 	}
 	
 	private boolean setOverlay(GrainVO vo) {
@@ -405,17 +415,18 @@ public class WorkSpaceController {
 		return canvas.setOverlay(overlay);
 	}
 	
-	private boolean setEllipse(GrainVO vo) {
-		if(vo.getEllipseImg()==null)
-			return false;
-		Image ellipse = null;
+	private void setEllipse(GrainVO vo) {
+		if(vo.getEllipseImg()==null) {
+			canvas.setEllipseShow(false);
+			return;
+		}
 		try {
-			ellipse = Utils.mat2Image(vo.getEllipseImg());
+			canvas.setEllipse(Utils.mat2Image(vo.getEllipseImg()));
+			canvas.setEllipseShow(true);
 		}catch(Exception e) {
 			logger.error("setEllipse failed:{}", e.getMessage());
-			return false;
+			canvas.setEllipseShow(false);
 		}
-		return canvas.setEllipse(ellipse);
 	}
 	
 	private boolean setSeedCanvas() {

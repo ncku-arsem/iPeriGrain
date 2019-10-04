@@ -1,6 +1,7 @@
 package edu.ncku.model.grainimage;
 
 import com.google.gson.Gson;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +18,7 @@ public class GrainDAOImplement implements GrainDAO{
 	private Gson gson = new Gson();
 	private static final String GRAIN_CONFIG = "config.json";
 	private final static String FILE_PATTERN = "%s"+File.separator+"%s";
-	private final static String GRAIN_ORI = "original.tif";
+	private final static String GRAIN_ORI = "original";
 	private final static String GRAIN_ORI_8Bit = "01_original.png";
 	private final static String GRAIN_SMOOTH = "02_smooth.png";
 	private static final String GRAIN_NON = "03_non-grain.png";
@@ -60,7 +61,22 @@ public class GrainDAOImplement implements GrainDAO{
 			logger.info("getOriginalImageFromFile:{}", cfg);
 			return m;
 		}
-		return getImageFromFile(cfg, GRAIN_ORI);
+		String ori = GRAIN_ORI+"."+getOriginalImageExtend(new File(cfg.getWorkspace()));
+		return getImageFromFile(cfg, ori);
+	}
+
+	private String getOriginalImageExtend(File f){
+		if(!f.exists() || !f.isDirectory())
+			return "";
+		File [] files = f.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return StringUtils.startsWith(name, GRAIN_ORI);
+			}
+		});
+		if(files==null || files.length<1)
+			return "";
+		return FilenameUtils.getExtension(files[0].getPath());
 	}
 
 	@Override

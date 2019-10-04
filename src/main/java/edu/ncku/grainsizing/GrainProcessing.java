@@ -7,17 +7,17 @@ import edu.ncku.model.tempmarker.TempMarkerVO;
 
 public interface GrainProcessing {
 	
-	public GrainVO doGrainProcessing(String workspace);
-	public Mat smoothGrain(GrainVO vo);
-	public Mat identifyNonGrain(GrainVO vo);
-	public Mat generateDistanceMap(GrainVO vo);
-	public Mat generateMarker(GrainVO vo);
-	public Mat segmentGrain(GrainVO vo, TempMarkerVO shadowVO);
-	public GrainVO doReSegmentGrainProcessing(GrainVO vo);
-	public GrainVO doFitEllipse(GrainVO vo);
-	public void findGrainContours(GrainVO vo);
-	public void fitEllipse(GrainVO vo);
-	public GrainVO enhaceToShow(GrainVO vo);
+	GrainVO doGrainProcessing(String workspace, GrainParam param);
+	Mat smoothGrain(GrainVO vo);
+	Mat identifyNonGrain(GrainVO vo, GrainParam grainParam);
+	Mat generateDistanceMap(GrainVO vo);
+	Mat generateMarker(GrainVO vo);
+	Mat segmentGrain(GrainVO vo, TempMarkerVO shadowVO);
+	GrainVO doReSegmentGrainProcessing(GrainVO vo);
+	GrainVO doFitEllipse(GrainVO vo);
+	void findGrainContours(GrainVO vo);
+	void fitEllipse(GrainVO vo);
+	GrainVO enhaceToShow(GrainVO vo);
 	/**
 	 * Called by doReSegmentGrainProcessing
 	 * @param vo

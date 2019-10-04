@@ -31,16 +31,16 @@ public class GrainProcessingImplement implements GrainProcessing{
 	private TempMarkerService tempMarkerService;
 
 	@Override
-	public GrainVO doGrainProcessing(String workspace) {
+	public GrainVO doGrainProcessing(String workspace, GrainParam grainParam) {
 		GrainVO vo = grainService.getGrainVO(workspace);
 		vo.setSmoothImg(smoothGrain(vo));
-		vo.setNonGrainImg(identifyNonGrain(vo));
+		vo.setNonGrainImg(identifyNonGrain(vo, grainParam));
 		vo.setDisMapImg(generateDistanceMap(vo));
 		vo.setMarkImg(generateMarker(vo));
 		vo.setIndexImg(segmentGrain(vo, null));
 		vo.setSegmentedImg(getBinarySegmentResut(vo.getIndexImg()));
 		vo.setOriSegmentedImg(vo.getSegmentedImg());
-		doFitEllipse(vo);
+		vo.setEllipseImg(null);
 		return vo;
 	}
 	
@@ -53,10 +53,10 @@ public class GrainProcessingImplement implements GrainProcessing{
 	}
 
 	@Override
-	public Mat identifyNonGrain(GrainVO vo) {
+	public Mat identifyNonGrain(GrainVO vo, GrainParam grainParam) {
 		if(vo==null || vo.getSmoothImg()==null) return null;
 		Mat edge = new Mat();
-		Imgproc.Canny(vo.getSmoothImg(), edge, 10, 40);
+		Imgproc.Canny(vo.getSmoothImg(), edge, grainParam.getCannyMinThreshold(), grainParam.getCannyMaxThreshold());
 		return edge;
 	}
 	
@@ -65,7 +65,7 @@ public class GrainProcessingImplement implements GrainProcessing{
 		Mat invertNonGrain = new Mat();
 		Core.bitwise_not(vo.getNonGrainImg(), invertNonGrain);
 		Mat dis = new Mat();
-		Imgproc.distanceTransform(invertNonGrain, dis, Imgproc.CV_DIST_L2, 3);
+		Imgproc.distanceTransform(invertNonGrain, dis, Imgproc.CV_DIST_L2, 5);
 		invertNonGrain.release();
 		return dis;
 	}
@@ -74,7 +74,7 @@ public class GrainProcessingImplement implements GrainProcessing{
 	public Mat generateMarker(GrainVO vo) {
 		Mat grainMark = new Mat();
 		Mat dis8bit = this.convertTo8UC1(vo.getDisMapImg());
-		Imgproc.threshold(dis8bit, grainMark, 50, 255, Imgproc.THRESH_BINARY);
+		Imgproc.threshold(dis8bit, grainMark, 20, 255, Imgproc.THRESH_BINARY);
 		dis8bit.release();
 		return grainMark;
 	}
@@ -98,8 +98,13 @@ public class GrainProcessingImplement implements GrainProcessing{
                 Imgproc.drawContours(markers, shadowContours, i, new Scalar(vo.getConfig().getMaxIndex()+1), -1);
             }
         }
-        Mat m = new Mat();
-        Imgproc.cvtColor(vo.getSmoothImg(), m, Imgproc.COLOR_GRAY2BGR);
+        Mat m;
+        if(vo.getSmoothImg().channels()==1) {
+			m = new Mat();
+			Imgproc.cvtColor(vo.getSmoothImg(), m, Imgproc.COLOR_GRAY2BGR);
+		}else {
+        	m = vo.getSmoothImg();
+		}
         Imgproc.watershed(m, markers);
         vo.setOverlayImg(generateOverlay(markers, contours.size()));
 		return markers;
@@ -182,7 +187,7 @@ public class GrainProcessingImplement implements GrainProcessing{
 		vo.setMarkImg(newMarker);
 		vo.setIndexImg(segmentGrain(vo, shadowVO));
 		vo.setSegmentedImg(getBinarySegmentResut(vo.getIndexImg()));
-		doFitEllipse(vo);
+		vo.setEllipseImg(null);
 		return vo;
 	}
 	
@@ -193,7 +198,7 @@ public class GrainProcessingImplement implements GrainProcessing{
 		Mat mergeImg = mergeVO.getTemp();
 		Mat resultMat = new Mat();
 		vo.setMarkImg(vo.getOriSegmentedImg()); //modify to set original segmented result
-		Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT, new Size(3,3), new Point(1, 1));
+		Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT, new Size(2,2), new Point(1, 1));
 		Mat markImg = new Mat();
 		Imgproc.erode(vo.getMarkImg(), markImg, element);
 		Core.bitwise_or(markImg, mergeImg, resultMat);
@@ -219,33 +224,40 @@ public class GrainProcessingImplement implements GrainProcessing{
 	public void findGrainContours(GrainVO vo) {
 		if(vo==null || vo.getIndexImg()==null)
 			return;
+		List<MatOfPoint> allContours = new LinkedList<>();
+		Mat dst = Mat.zeros(vo.getIndexImg().size(), CvType.CV_8UC1);
+		Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_CROSS, new Size(3, 3), new Point(1, 1));
+		Mat dstDilate = Mat.zeros(vo.getIndexImg().size(), CvType.CV_8UC1);
 		Mat indexMat = vo.getIndexImg();
 		int cols = indexMat.cols();
 		int maxIndex = vo.getConfig().getMaxIndex();
-		List<byte[]> indexAreaList = new ArrayList<>(maxIndex);
-		for(int i=0;i<maxIndex;i++)
-			indexAreaList.add(new byte[(int)indexMat.total()]);
-		int [] imageArray = new int[(int)indexMat.total()];
-		vo.getIndexImg().get(0, 0, imageArray);
-        for (int i = 0; i < indexMat.rows(); i++) {
-            for (int j = 0; j < indexMat.cols(); j++) {
-                int index = imageArray[(i*cols) + j];
-                if(index<=0 || index > vo.getConfig().getMaxIndex())
-                	continue;
-                indexAreaList.get(index-1)[(i*cols)+j] = (byte) 255;
-            }
-        }
-        List<MatOfPoint> allContours = new LinkedList<>();
-        Mat dst = Mat.zeros(vo.getIndexImg().size(), CvType.CV_8UC1);
-        Mat dstDilate = Mat.zeros(vo.getIndexImg().size(), CvType.CV_8UC1);
-        Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_CROSS, new Size(3, 3), new Point(1, 1));
-        for(byte [] dstData:indexAreaList) {
-        	dst.put(0, 0, dstData);
-        	Imgproc.dilate(dst, dstDilate, element);
-        	List<MatOfPoint> contours = new ArrayList<>();
-        	Imgproc.findContours(dstDilate, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
-        	allContours.addAll(contours);
-        }
+		int [] indexArray = new int[(int)indexMat.total()];
+		vo.getIndexImg().get(0, 0, indexArray);
+		LinkedList<Integer>[] ary = new LinkedList[maxIndex+1];
+		for(int i=0;i<=maxIndex;i++)
+			ary[i] = new LinkedList<>();
+		for (int i = 0; i < indexMat.rows(); i++) {
+			for (int j = 0; j < indexMat.cols(); j++) {
+				int index = indexArray[(i * cols) + j];
+				if(index<0 || index>maxIndex)
+					continue;
+				ary[index].add((i * cols) + j);
+			}
+		}
+		for(int v = 0; v<=maxIndex;v++) {
+			byte [] imageArray = new byte[(int)indexMat.total()];
+			LinkedList<Integer> list = ary[v];
+			for(int i:list){
+				imageArray[i]=(byte) 255;
+			}
+			dst.put(0, 0, imageArray);
+			Imgproc.dilate(dst, dstDilate, element);
+			List<MatOfPoint> contours = new ArrayList<>();
+			Imgproc.findContours(dstDilate, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
+			allContours.addAll(contours);
+			dstDilate.release();
+		}
+		dst.release();
 		vo.setResults(allContours.stream().filter(contours->{
 			return contours.size().height>=OPENCV_FITELLIPSE_LIMIT || contours.size().width>=OPENCV_FITELLIPSE_LIMIT;
 		}).map(m->{
@@ -253,7 +265,7 @@ public class GrainProcessingImplement implements GrainProcessing{
 			v.setContour(m);
 			return v;
 		}).collect(Collectors.toList()));
-		dst.release();
+		allContours.clear();
 	}
 	
 	@Override

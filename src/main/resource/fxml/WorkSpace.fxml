@@ -11,6 +11,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -18,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mainPane" prefHeight="687.0" prefWidth="831.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.ncku.controller.WorkSpaceController">
+<BorderPane fx:id="mainPane" prefHeight="770.0" prefWidth="914.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.ncku.controller.WorkSpaceController">
    <top>
       <MenuBar fx:id="menuBar" BorderPane.alignment="CENTER">
         <menus>
@@ -54,8 +55,29 @@
                                     <ToggleButton fx:id="trashShadowButton" layoutX="42.0" layoutY="10.0" />
                                   </toggles>
                               </ToggleButtonGroup>
+                              <HBox alignment="CENTER_LEFT" layoutX="30.0" layoutY="366.0" prefWidth="163.0" spacing="5.0">
+                                 <children>
+                                    <Label fx:id="markerIndexLabel1" text="Min Threshold:">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="minThreshold" alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="65.0" text="50" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" prefWidth="163.0" spacing="5.0">
+                                 <children>
+                                    <Label fx:id="markerIndexLabel2" text="Max Threshold:">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="maxThreshold" alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="65.0" text="100" />
+                                 </children>
+                              </HBox>
                               <Button mnemonicParsing="false" onMouseClicked="#doSegment" prefHeight="32.0" prefWidth="110.0" text="Segment" />
                               <Button mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="110.0" text="ReSegment" />
+                              <Button fx:id="fitEllipseButton" layoutX="30.0" layoutY="208.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="110.0" text="Fit Ellipse" />
                               <Button fx:id="exportButton" mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="110.0" text="Export" />
                               <Button fx:id="exportTextButton" layoutX="30.0" layoutY="140.0" mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="110.0" text="Text Export" />
                               <Button fx:id="exportEllipseButton" layoutX="30.0" layoutY="180.0" mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="110.0" text="Ellipse Export" />
@@ -85,7 +107,6 @@
                               </HBox>
                               <CheckBox fx:id="markerCheckBox" layoutX="30.0" layoutY="260.0" mnemonicParsing="false" text="Marker Overlay" />
                               <CheckBox fx:id="segmentCheckBox" mnemonicParsing="false" text="Segment Overlay" />
-                              <CheckBox fx:id="ellipseCheckBox" layoutX="30.0" layoutY="260.0" mnemonicParsing="false" text="Ellipse Overlay" />
                               <Label alignment="TOP_CENTER" contentDisplay="BOTTOM" nodeOrientation="LEFT_TO_RIGHT" text="Alpha" textOverrun="CLIP">
                                  <graphic>
                                     <Slider fx:id="alphaSlider" blockIncrement="0.1" majorTickUnit="1.0" max="3.0" min="1.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />

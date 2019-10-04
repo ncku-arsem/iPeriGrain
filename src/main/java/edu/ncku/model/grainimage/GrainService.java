@@ -56,11 +56,16 @@ public class GrainService {
 	private Mat convertTo8UC1(Mat mat) {
 		if(mat==null) return mat;
 		if(mat.channels()==1 && mat.depth()==CvType.CV_8UC1) return mat;
-		MinMaxLocResult minMax = Core.minMaxLoc(mat);
-		double max = minMax.maxVal;
-		double min = minMax.minVal;
-		Mat m = new Mat(mat.height(),mat.width(),CvType.CV_8UC1);
-		mat.convertTo(m, CvType.CV_8UC1, 256.0/(max-min), -256.0*min/(max-min));
+		if(mat.depth()!=CvType.CV_8U) {
+			MinMaxLocResult minMax = Core.minMaxLoc(mat);
+			double max = minMax.maxVal;
+			double min = minMax.minVal;
+			Mat m = new Mat(mat.height(), mat.width(), CvType.CV_8UC1);
+			mat.convertTo(m, CvType.CV_8UC1, 256.0 / (max - min), -256.0 * min / (max - min));
+			return m;
+		}
+		Mat m = new Mat(mat.height(), mat.width(), CvType.CV_8UC1);
+		mat.convertTo(m, CvType.CV_8UC1);
 		return m;
 	}
 }
