@@ -82,9 +82,10 @@ public class GrainExportImplement implements GrainExport{
 			featureStore.addFeatures(collection);
 			transaction.commit();
 		} catch (IOException e) {
+			try { transaction.rollback(); } catch (IOException ex) { }
 			throw new RuntimeException("transaction problem:"+e.getMessage());
 		}finally {
-			try {transaction.rollback();} catch (IOException e) {}
+			try {transaction.close();} catch (IOException e) {}
 		}
 	}
 

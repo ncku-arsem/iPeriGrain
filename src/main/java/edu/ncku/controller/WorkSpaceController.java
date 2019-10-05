@@ -88,6 +88,8 @@ public class WorkSpaceController {
 	@FXML
 	private Button fitEllipseButton;
 	@FXML
+	private Button closeEllipseButton;
+	@FXML
 	private ChoiceBox<Integer> cacheChoiceBox;
 	@FXML
 	private Button restoreButton;
@@ -115,6 +117,8 @@ public class WorkSpaceController {
 	private TextField minThreshold;
 	@FXML
 	private TextField maxThreshold;
+	@FXML
+	private TextField scaleText;
 
 	@Autowired
 	private WorkspaceService workspaceService;
@@ -198,6 +202,7 @@ public class WorkSpaceController {
 			grainProcessing.doFitEllipse(grainVO);
 			setEllipse(grainVO);
 		});
+		closeEllipseButton.setOnAction(e-> canvas.setEllipseShow(false));
 
 		alphaSlider.valueProperty().addListener((ob, oldVal, newVal)->{
 			if(grainVO==null || grainVO.getConfig()==null)
@@ -392,14 +397,29 @@ public class WorkSpaceController {
 	}
 
 	private void doExport(File exportFile, GrainExport grainExport) {
-		grainProcessing.doFitEllipse(grainVO);
-		List<GrainResultVO> list = grainVO.getResults();
-		List<GrainShape> grainShapes = new LinkedList<>();
-		for(GrainResultVO vo:list) {
-			grainShapes.add(new GrainResultAdapter(vo, grainVO.getConfig().getHeight()));
+		try {
+			double mPerPixel = Double.parseDouble(scaleText.getText()) / 100.0;
+			GrainResultAdapter.setScale(mPerPixel);
+		}catch (Exception e){
+			logger.error("doExport:{}", e.getMessage());
+			showInfoAlert("Format pixel scale failed.");
+			return;
 		}
-		grainExport.doExportGrain(grainShapes, exportFile.getAbsolutePath());
-		setEllipse(grainVO);
+		try {
+			grainProcessing.doFitEllipse(grainVO);
+			List<GrainResultVO> list = grainVO.getResults();
+			List<GrainShape> grainShapes = new LinkedList<>();
+			for (GrainResultVO vo : list) {
+				grainShapes.add(new GrainResultAdapter(vo, grainVO.getConfig().getHeight()));
+			}
+			grainExport.doExportGrain(grainShapes, exportFile.getAbsolutePath());
+			setEllipse(grainVO);
+			grainVO.setResults(null);
+		}catch (Exception e){
+			logger.error("doExport:{}", e.getMessage());
+			showInfoAlert("Export ellipse failed:"+e.getLocalizedMessage());
+			return;
+		}
 	}
 	
 	private boolean setOverlay(GrainVO vo) {

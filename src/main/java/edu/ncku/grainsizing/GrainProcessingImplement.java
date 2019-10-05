@@ -81,7 +81,7 @@ public class GrainProcessingImplement implements GrainProcessing{
 	
 	@Override
 	public Mat segmentGrain(GrainVO vo, TempMarkerVO shadowVO) {
-		List<MatOfPoint> contours = new ArrayList<>();
+		List<MatOfPoint> contours = new ArrayList<>(1000);
         Mat hierarchy = new Mat();
         Imgproc.findContours(vo.getMarkImg(), contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         // Create the marker image for the watershed algorithm
@@ -92,7 +92,7 @@ public class GrainProcessingImplement implements GrainProcessing{
         }
         vo.getConfig().setMaxIndex(contours.size());
         if(shadowVO != null) {
-        	List<MatOfPoint> shadowContours = new ArrayList<>();
+        	List<MatOfPoint> shadowContours = new ArrayList<>(100);
             Imgproc.findContours(shadowVO.getTemp(), shadowContours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
             for (int i = 0; i < shadowContours.size(); i++) {
                 Imgproc.drawContours(markers, shadowContours, i, new Scalar(vo.getConfig().getMaxIndex()+1), -1);
@@ -111,7 +111,7 @@ public class GrainProcessingImplement implements GrainProcessing{
 	}
 	
 	private Mat generateOverlay(Mat markers, int maxIndex) {
-		Random rng = new Random(12345);
+		Random rng = new Random(System.currentTimeMillis());
         List<Scalar> colors = new ArrayList<>(maxIndex);
         for (int i = 0; i < maxIndex; i++) {
             int b = rng.nextInt(256);
@@ -121,7 +121,6 @@ public class GrainProcessingImplement implements GrainProcessing{
         }
         Mat dst = Mat.zeros(markers.size(), CvType.CV_8UC4);
         byte[] dstData = new byte[(int) (dst.total() * dst.channels())];
-        dst.get(0, 0, dstData);
         int[] markersData = new int[(int) (markers.total() * markers.channels())];
         markers.get(0, 0, markersData);
         for (int i = 0; i < markers.rows(); i++) {
@@ -159,7 +158,7 @@ public class GrainProcessingImplement implements GrainProcessing{
 		List<MatOfPoint> contours = new ArrayList<>();
 		Mat newMarker = marker.clone();
 		Mat hierarchy = new Mat();
-		Imgproc.findContours(floodFillImg, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
+		Imgproc.findContours(floodFillImg, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 		Mat mask = new Mat(floodFillImg.height()+2, floodFillImg.width()+2 , CvType.CV_8UC1);
 		mask.setTo(new Scalar(0));
 		Scalar color = new Scalar(0);

@@ -77,7 +77,27 @@
                               </HBox>
                               <Button mnemonicParsing="false" onMouseClicked="#doSegment" prefHeight="32.0" prefWidth="110.0" text="Segment" />
                               <Button mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="110.0" text="ReSegment" />
-                              <Button fx:id="fitEllipseButton" layoutX="30.0" layoutY="208.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="110.0" text="Fit Ellipse" />
+                              <HBox alignment="CENTER_LEFT" layoutX="30.0" layoutY="94.0" prefHeight="32.0" prefWidth="114.0" spacing="5.0">
+                                 <children>
+                                    <Button fx:id="fitEllipseButton" minWidth="48.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="48.0" text="Fit" />
+                                    <Button fx:id="closeEllipseButton" layoutX="10.0" layoutY="10.0" minWidth="50.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="67.0" text="Close" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" layoutX="30.0" layoutY="94.0" prefWidth="163.0" spacing="5.0">
+                                 <children>
+                                    <Label fx:id="markerIndexLabel21" text="1 Pixel:">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="scaleText" alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="65.0" text="1" />
+                                    <Label fx:id="markerIndexLabel211" layoutX="10.0" layoutY="14.0" text="cm">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
                               <Button fx:id="exportButton" mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="110.0" text="Export" />
                               <Button fx:id="exportTextButton" layoutX="30.0" layoutY="140.0" mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="110.0" text="Text Export" />
                               <Button fx:id="exportEllipseButton" layoutX="30.0" layoutY="180.0" mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="110.0" text="Ellipse Export" />

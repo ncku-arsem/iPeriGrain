@@ -3,6 +3,7 @@ package edu.ncku.controller;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
@@ -17,7 +18,10 @@ import edu.ncku.grainsizing.export.GrainShape;
 import edu.ncku.model.grainimage.GrainResultVO;
 
 public class GrainResultAdapter implements GrainShape{
-	private static final double SCALE = 100.0;
+	private static double SCALE = 1.0/100.0;
+	public static void setScale(double mPerPixel){
+		SCALE = mPerPixel;
+	}
 	private static final GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
 	private Polygon polygon;
 	private RotatedRect ellipse;
@@ -28,9 +32,10 @@ public class GrainResultAdapter implements GrainShape{
 		
 		List<Coordinate> list = new LinkedList<Coordinate>();
 		for(Point point:pointArray) 
-			list.add(new Coordinate(point.x/SCALE, (height - point.y)/SCALE));
+			list.add(new Coordinate(point.x*SCALE, (height - point.y)*SCALE));
 		Point firstOne = pointArray[0];
-		list.add(new Coordinate(firstOne.x/SCALE, (height - firstOne.y)/SCALE));
+		list.add(new Coordinate(firstOne.x*SCALE, (height - firstOne.y)*SCALE));
+
 		LinearRing shell = geometryFactory.createLinearRing(list.toArray(new Coordinate[list.size()]));
 		polygon = geometryFactory.createPolygon(shell, null);
 		ellipse = vo.getEllipse();
@@ -44,22 +49,22 @@ public class GrainResultAdapter implements GrainShape{
 
 	@Override
 	public double getCenterX() {
-		return ellipse.center.x/SCALE;
+		return ellipse.center.x*SCALE;
 	}
 
 	@Override
 	public double getCenterY() {
-		return (height - ellipse.center.y)/SCALE;
+		return (height - ellipse.center.y)*SCALE;
 	}
 
 	@Override
 	public double getMajorAxis() {
-		return ellipse.size.height/SCALE;
+		return ellipse.size.height*SCALE;
 	}
 
 	@Override
 	public double getMinorAxis() {
-		return ellipse.size.width/SCALE;
+		return ellipse.size.width*SCALE;
 	}
 
 	@Override
