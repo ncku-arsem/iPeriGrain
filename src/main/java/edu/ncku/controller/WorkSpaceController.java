@@ -218,11 +218,11 @@ public class WorkSpaceController {
 		});
 
 		applyColorButton.setOnAction(e->{
-			if(grainVO==null || grainVO.getDisMapImg()==null)
+			if(grainVO==null || grainVO.getOriginalImg()==null)
 				return;
 			ColorMap colorMap = colorChoiceBox.getValue();
 			Mat mat = colorMapper.convertColorMat(colorMap, grainVO.getOriginalImg());
-			grainVO.setDisMapImg(mat);
+			grainVO.setDisplayImg(mat);
 			Image img = Utils.mat2Image(mat);
 			if(img!=null)
 				canvas.setBasicImage(img);

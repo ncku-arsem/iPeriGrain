@@ -32,18 +32,18 @@ public class GrainService {
 	public GrainConfig getGrainConfig(String workspace) {
 		return grainDAO.getGrainConfig(workspace);
 	}
-	
-	public GrainConfig getInitIfNotExisteConfig(String workspace) {
+
+	public GrainConfig getInitIfNotExistConfig(String workspace) {
 		GrainConfig config = this.getGrainConfig(workspace);
 		if(config!=null) return config;
 		config = new GrainConfig();
 		config.setWorkspace(workspace);
 		config.setStatus(GrainStatus.UNSEGMENTED);
-		this.saveGrainCofig(config);
+		this.saveGrainConfig(config);
 		return config;
 	}
-	
-	public void saveGrainCofig(GrainConfig vo) {
+
+	public void saveGrainConfig(GrainConfig vo) {
 		if(vo.getStatus()==null) 
 			vo.setStatus(GrainStatus.UNSEGMENTED);
 		grainDAO.saveGrainConfig(vo);

@@ -1,9 +1,9 @@
 package edu.ncku.model.grainimage;
 
 public interface GrainDAO {
-	public GrainVO getGrainVO(GrainConfig config);
-	public GrainConfig getInitGrainConfig(String workspace);
-	public GrainConfig getGrainConfig(String workspace);
-	public void saveGrainConfig(GrainConfig cfg);
-	public void saveGrainVO(GrainVO vo);
+	GrainVO getGrainVO(GrainConfig config);
+	GrainConfig getInitGrainConfig(String workspace);
+	GrainConfig getGrainConfig(String workspace);
+	void saveGrainConfig(GrainConfig cfg);
+	void saveGrainVO(GrainVO vo);
 }
