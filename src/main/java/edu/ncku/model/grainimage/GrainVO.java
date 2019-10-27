@@ -14,7 +14,6 @@ public class GrainVO {
 	private Mat disMapImg;
 	private Mat markImg;
 	private Mat segmentedImg;
-	private Mat latestSegmentedImg;
 	private Mat indexImg;
 	private Mat overlayImg;
 	private Mat ellipseImg;
@@ -98,12 +97,5 @@ public class GrainVO {
 	}
 	public void setEnhanceImg(Mat enhanceImg) {
 		this.enhanceImg = enhanceImg;
-	}
-	public Mat getLatestSegmentedImg() {
-		return latestSegmentedImg;
-	}
-
-	public void setLatestSegmentedImg(Mat latestSegmentedImg) {
-		this.latestSegmentedImg = latestSegmentedImg;
 	}
 }

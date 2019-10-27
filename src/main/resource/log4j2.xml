@@ -11,14 +11,20 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="${sys:LOG_PATTERN}"/>
         </Console>
-        <File name="LogFile" fileName="logs/grain-sizing.log">
+        <RollingRandomAccessFile name="LogToRollingRandomAccessFile" fileName="logs/grain.log"
+                                 filePattern="logs/$${date:yyyy-MM}/grain-%d{MM-dd-yyyy}-%i.log.gz">
             <PatternLayout pattern="${sys:LOG_PATTERN}"/>
-        </File>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingRandomAccessFile>
     </Appenders>
     <Loggers>
         <Root level="info">
             <AppenderRef ref="Console" />
-            <AppenderRef ref="LogFile" />
+            <AppenderRef ref="LogToRollingRandomAccessFile" />
         </Root>
     </Loggers>
 </Configuration>

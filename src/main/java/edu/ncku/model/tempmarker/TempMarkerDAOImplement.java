@@ -10,7 +10,7 @@ import java.io.File;
 
 @Component
 public class TempMarkerDAOImplement implements TempMarkerDAO{
-	private final Logger logger = LogManager.getLogger(TempMarkerDAOImplement.class.getClass());
+	private final Logger logger = LogManager.getLogger(TempMarkerDAOImplement.class);
 	
 	@Override
 	public TempMarkerVO getTempMarker(String workspace, String name) {
@@ -27,5 +27,17 @@ public class TempMarkerDAOImplement implements TempMarkerDAO{
 		TempMarkerVO vo = new TempMarkerVO();
 		vo.setTemp(mat);
 		return vo;
+	}
+
+	@Override
+	public boolean saveTeamMarker(String workspace, String name, TempMarkerVO vo) {
+		if(vo==null || vo.getTemp()==null)
+			return false;
+		File f = new File(workspace + File.separator + name);
+		return saveImageToFile(f, vo.getTemp());
+	}
+
+	private boolean saveImageToFile(File file, Mat mat) {
+		return Imgcodecs.imwrite(file.getAbsolutePath(), mat);
 	}
 }

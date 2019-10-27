@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class GrainProcessingImplement implements GrainProcessing{
-	private final Logger logger = LogManager.getLogger(GrainProcessingImplement.class.getClass());
+	private final Logger logger = LogManager.getLogger(GrainProcessingImplement.class);
 	private final static int OPENCV_FITELLIPSE_LIMIT = 5;
 	
 	@Autowired
@@ -39,8 +39,9 @@ public class GrainProcessingImplement implements GrainProcessing{
 		vo.setMarkImg(generateMarker(vo));
 		vo.setIndexImg(segmentGrain(vo, null));
 		vo.setSegmentedImg(getBinarySegmentResut(vo.getIndexImg()));
-		vo.setLatestSegmentedImg(vo.getSegmentedImg());
 		vo.setEllipseImg(null);
+
+		tempMarkerService.saveLastResult(workspace, new TempMarkerVO(vo.getSegmentedImg()));
 		return vo;
 	}
 	
@@ -175,8 +176,9 @@ public class GrainProcessingImplement implements GrainProcessing{
 	
 	@Override
 	public GrainVO doReSegmentGrainProcessing(GrainVO vo) {
+		TempMarkerVO lastResult = tempMarkerService.getLastResult(vo.getConfig().getWorkspace());
 		TempMarkerVO seedVO = tempMarkerService.getSeedMarker(vo.getConfig().getWorkspace());
-		Mat newMarker = generateMergeMarker(vo, seedVO);
+		Mat newMarker = generateMergeMarker(vo, seedVO, lastResult.getTemp());
 		vo.setMarkImg(newMarker);
 		newMarker = generateSplitMarker(vo, seedVO);
 		vo.setMarkImg(newMarker);
@@ -187,20 +189,20 @@ public class GrainProcessingImplement implements GrainProcessing{
 		vo.setMarkImg(newMarker);
 		vo.setIndexImg(segmentGrain(vo, shadowVO));
 		vo.setSegmentedImg(getBinarySegmentResut(vo.getIndexImg()));
-		vo.setLatestSegmentedImg(vo.getSegmentedImg());
 		vo.setEllipseImg(null);
 
+		tempMarkerService.saveLastResult(vo.getConfig().getWorkspace(), new TempMarkerVO(vo.getSegmentedImg()));
 		return vo;
 	}
 	
 	@Override
-	public Mat generateMergeMarker(GrainVO vo, TempMarkerVO mergeVO) {
+	public Mat generateMergeMarker(GrainVO vo, TempMarkerVO mergeVO, Mat lastResult) {
 		if(mergeVO==null || mergeVO.getTemp()==null)
-			return vo.getLatestSegmentedImg(); //modify to return original segmented result
+			return lastResult;
 		Mat resultMat = new Mat();
 		Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT, new Size(2,2), new Point(1, 1));
 		Mat markImg = new Mat();
-		Imgproc.erode(vo.getLatestSegmentedImg(), markImg, element);
+		Imgproc.erode(lastResult, markImg, element);
 		Core.bitwise_or(markImg, mergeVO.getTemp(), resultMat);
 		markImg.release();
 		return resultMat;
@@ -292,7 +294,7 @@ public class GrainProcessingImplement implements GrainProcessing{
 	}
 	
 	@Override
-	public GrainVO enhaceToShow(GrainVO vo) {
+	public GrainVO enhanceToShow(GrainVO vo) {
 		if(vo.getDisplayImg()==null || vo.getConfig()==null)
 			return vo;
 		Mat newImage = Mat.zeros(vo.getDisplayImg().size(), vo.getDisplayImg().type());

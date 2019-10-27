@@ -9,26 +9,39 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import static edu.ncku.store.MarkerFile.SEED_FILE_NAME;
-import static edu.ncku.store.MarkerFile.SHADOW_FILE_NAME;
+import static edu.ncku.store.MarkerFile.*;
 
 @Component
 public class MarkerFileQueue {
+	private final Logger logger = LogManager.getLogger(MarkerFileQueue.class);
+
 	private static final String TEMP_FOLDER = "_tmp"+File.separator;
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMddHHmmss");
 	private static final String SEED_PATTERN = "_seed%s.png";
 	private static final String SHADOW_PATTERN = "_shadow%s.png";
+	private static final String LAST_PATTERN = "_last%s.png";
+	private static final String CONFIRMED_PATTERN = "_confirmed%s.png";
 	private int capacity = 30;
 	private NextPreviousList<String> nextPreviousList = new NextPreviousList<>(capacity);
 
-	public File getDefalutSeedFile(File workspaceFolder) {
+	private File getDefaultSeedFile(File workspaceFolder) {
 		return new File(workspaceFolder, SEED_FILE_NAME);
 	}
-	
-	public File getDefalutShadowFile(File workspaceFolder) {
+
+	private File getDefaultShadowFile(File workspaceFolder) {
 		return new File(workspaceFolder, SHADOW_FILE_NAME);
+	}
+
+	private File getDefaultLastFile(File workspaceFolder) {
+		return new File(workspaceFolder, LAST_FILE_NAME);
+	}
+
+	private File getDefaultConfirmedFile(File workspaceFolder) {
+		return new File(workspaceFolder, CONFIRMED_FILE_NAME);
 	}
 
 	public void clearTemp(File workspaceFolder){
@@ -56,15 +69,18 @@ public class MarkerFileQueue {
 		String index = LocalDateTime.now().format(dateTimeFormatter);
 		File seed = getTmpFile(workspaceFolder, String.format(SEED_PATTERN, index));
 		File shadow = getTmpFile(workspaceFolder, String.format(SHADOW_PATTERN, index));
-		File seedDefault = getDefalutSeedFile(workspaceFolder);
-		File shadowDefault = getDefalutShadowFile(workspaceFolder);
-		boolean copySeed = copy(seedDefault, seed);
-		boolean copyShadow = copy(shadowDefault, shadow);
-		if(copySeed || copyShadow) {
+		File last = getTmpFile(workspaceFolder, String.format(LAST_PATTERN, index));
+		File confirmed = getTmpFile(workspaceFolder, String.format(CONFIRMED_PATTERN, index));
+
+		boolean copySeed = copy(getDefaultSeedFile(workspaceFolder), seed);
+		boolean copyShadow = copy(getDefaultShadowFile(workspaceFolder), shadow);
+		boolean copyLast = copy(getDefaultLastFile(workspaceFolder), last);
+		boolean copyConfirmed = copy(getDefaultConfirmedFile(workspaceFolder), confirmed);
+
+		if(copySeed || copyShadow || copyLast || copyConfirmed) {
 			if(nextPreviousList.isFull()) {
 				Optional<String> removeOptional = nextPreviousList.getLast();
-				if(removeOptional.isPresent())
-					removeFile(workspaceFolder, removeOptional.get());
+				removeOptional.ifPresent(s -> removeFile(workspaceFolder, s));
 			}
 			nextPreviousList.add(index);
 		}
@@ -87,11 +103,14 @@ public class MarkerFileQueue {
 	private boolean restoreFromIndex(File workspaceFolder, String index){
 		File seed = getTmpFile(workspaceFolder, String.format(SEED_PATTERN, index));
 		File shadow = getTmpFile(workspaceFolder, String.format(SHADOW_PATTERN, index));
-		File seedDefault = getDefalutSeedFile(workspaceFolder);
-		File shadowDefault = getDefalutShadowFile(workspaceFolder);
-		boolean copySeed = copy(seed, seedDefault);
-		boolean copyShadow = copy(shadow, shadowDefault);
-		return copySeed || copyShadow;
+		File last = getTmpFile(workspaceFolder, String.format(LAST_PATTERN, index));
+		File confirmed = getTmpFile(workspaceFolder, String.format(CONFIRMED_PATTERN, index));
+
+		boolean copySeed = copy(seed, getDefaultSeedFile(workspaceFolder));
+		boolean copyShadow = copy(shadow, getDefaultShadowFile(workspaceFolder));
+		boolean copyLast = copy(last, getDefaultLastFile(workspaceFolder));
+		boolean copyConfirmed = copy(confirmed, getDefaultConfirmedFile(workspaceFolder));
+		return copySeed || copyShadow || copyLast || copyConfirmed;
 	}
 
 	private boolean copy(File src, File dst){
@@ -101,7 +120,7 @@ public class MarkerFileQueue {
 			Files.copy(src.toPath(), dst.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return false;
 	}

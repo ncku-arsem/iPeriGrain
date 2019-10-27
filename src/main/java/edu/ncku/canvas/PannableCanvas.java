@@ -28,8 +28,11 @@ public class PannableCanvas extends Pane{
 	private Canvas basicCanvas;
 	private Canvas overlayCanvas;
 	private Canvas ellipseCanvas;
+
 	private Canvas seedCanvas;
 	private Canvas shadowCanvas;
+	private Canvas confirmedCanvas;
+
 	private DrawingAction drawingAction;
 	private ClearTrashAction clearTrashAction;
 	private MarkerRemover markerRemover;
@@ -72,9 +75,13 @@ public class PannableCanvas extends Pane{
 		basicCanvas = new Canvas(w, h);
 		seedCanvas = new Canvas(w, h);
 		shadowCanvas = new Canvas(w, h);
+		confirmedCanvas = new Canvas(w, h);
+
 		basicCanvas.setMouseTransparent(true);
 		seedCanvas.setMouseTransparent(true);
 		shadowCanvas.setMouseTransparent(true);
+		confirmedCanvas.setMouseTransparent(true);
+
 		GraphicsContext gc = basicCanvas.getGraphicsContext2D();
 		gc.setImageSmoothing(false);
 		gc.drawImage(img, 0, 0, w, h);
@@ -82,9 +89,12 @@ public class PannableCanvas extends Pane{
 		seedCanvas.getGraphicsContext2D().setImageSmoothing(false);
 		shadowCanvas.getGraphicsContext2D().setStroke(Color.BLUE);
 		shadowCanvas.getGraphicsContext2D().setImageSmoothing(false);
+		confirmedCanvas.getGraphicsContext2D().setStroke(Color.GREEN);
+		confirmedCanvas.getGraphicsContext2D().setImageSmoothing(false);
 		getChildren().add(basicCanvas);
 		getChildren().add(seedCanvas);
 		getChildren().add(shadowCanvas);
+		getChildren().add(confirmedCanvas);
 		basicCanvas.toBack();
 		setNotClearing();
 		triggerDrawingAction(DrawingAction.SEED);
@@ -111,6 +121,7 @@ public class PannableCanvas extends Pane{
 			overlayCanvas.toFront();
 			seedCanvas.toFront();
 			shadowCanvas.toFront();
+			confirmedCanvas.toFront();
 		}catch(Exception e) {
 			e.printStackTrace();
 			return false;
@@ -153,6 +164,14 @@ public class PannableCanvas extends Pane{
 		gc.drawImage(shadowImg, 0, 0, shadowCanvas.getWidth(), shadowCanvas.getHeight());
 		gc.setStroke(Color.BLUE);
 		shadowCanvas.setVisible(true);
+	}
+
+	public void setConfirmedImage(Image confirmedImg) {
+		GraphicsContext gc = confirmedCanvas.getGraphicsContext2D();
+		gc.clearRect(0, 0, confirmedImg.getWidth(), confirmedImg.getHeight());
+		gc.drawImage(confirmedImg, 0, 0, confirmedCanvas.getWidth(), confirmedCanvas.getHeight());
+		gc.setStroke(Color.GREEN);
+		confirmedCanvas.setVisible(true);
 	}
 	
 	public void clearSeedCanvas() {

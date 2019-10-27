@@ -17,19 +17,19 @@ public interface GrainProcessing {
 	GrainVO doFitEllipse(GrainVO vo);
 	void findGrainContours(GrainVO vo);
 	void fitEllipse(GrainVO vo);
-	GrainVO enhaceToShow(GrainVO vo);
+	GrainVO enhanceToShow(GrainVO vo);
 	/**
 	 * Called by doReSegmentGrainProcessing
 	 * @param vo
 	 * @param splitVO
 	 * @return 
 	 */
-	public Mat generateSplitMarker(GrainVO vo, TempMarkerVO splitVO);
+	Mat generateSplitMarker(GrainVO vo, TempMarkerVO splitVO);
 	/**
 	 * Called by doReSegmentGrainProcessing
 	 * @param vo
 	 * @param mergeVO
 	 * @return
 	 */
-	public Mat generateMergeMarker(GrainVO vo, TempMarkerVO mergeVO);
+	Mat generateMergeMarker(GrainVO vo, TempMarkerVO mergeVO, Mat lastResult);
 }

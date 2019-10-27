@@ -13,7 +13,7 @@ import java.io.*;
 
 @Component
 public class GrainDAOImplement implements GrainDAO{
-	private final Logger logger = LogManager.getLogger(GrainDAOImplement.class.getClass());
+	private final Logger logger = LogManager.getLogger(GrainDAOImplement.class);
 	
 	private Gson gson = new Gson();
 	private static final String GRAIN_CONFIG = "config.json";
@@ -27,8 +27,6 @@ public class GrainDAOImplement implements GrainDAO{
 	private static final String GRAIN_RESULT = "06_result.png";
 	private static final String GRAIN_OVERLAY = "07_overlay.png";
 	private static final String GRAIN_ELLIPSE = "08_ellipse.png";
-	private static final String GRAIN_LATEST_SEGMENT = "09_latest_segmented.png";
-
 	
 	@Override
 	public GrainVO getGrainVO(GrainConfig config) {
@@ -37,6 +35,7 @@ public class GrainDAOImplement implements GrainDAO{
 		GrainVO vo = new GrainVO();
 		vo.setConfig(config);
 		vo.setOriginalImg(orgImg);
+		vo.setDisplayImg(orgImg);
 		vo.setSmoothImg(getImageFromFile(config, GRAIN_SMOOTH));
 		vo.setNonGrainImg(getImageFromFile(config, GRAIN_NON));
 		vo.setDisMapImg(getImageFromFile(config, GRAIN_DIS_MAP));
@@ -46,7 +45,6 @@ public class GrainDAOImplement implements GrainDAO{
 		//can't read 32S image
 		//vo.setIndexImg(getImageFromFile(config, GRAIN_INDEX));
 		vo.setEllipseImg(getImageFromFile(config, GRAIN_ELLIPSE));
-		vo.setLatestSegmentedImg(getImageFromFile(config, GRAIN_LATEST_SEGMENT));
 		if(vo.getOriginalImg()!=null) {
 			config.setHeight(vo.getOriginalImg().height());
 			config.setWidth(vo.getOriginalImg().width());
@@ -115,7 +113,6 @@ public class GrainDAOImplement implements GrainDAO{
 		//can't save 32S image
 		//saveImageToFile(vo.getIndexImg(), GRAIN_INDEX, cfg);
 		saveImageToFile(vo.getEllipseImg(), GRAIN_ELLIPSE, cfg);
-		saveImageToFile(vo.getLatestSegmentedImg(), GRAIN_LATEST_SEGMENT, cfg);
 		saveGrainConfig(vo.getConfig());
 	}
 	

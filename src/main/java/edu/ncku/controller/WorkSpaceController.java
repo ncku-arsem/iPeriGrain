@@ -30,6 +30,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -258,18 +259,20 @@ public class WorkSpaceController {
     }
 
 	private void initializeToggleButton() {
-		seedButton.setGraphic(FontIcon.of(FontAwesome.PENCIL, 20));
+	    Color grainToolColor = Color.rgb(209, 79, 8);
+		seedButton.setGraphic(FontIcon.of(FontAwesome.PENCIL, 20, grainToolColor));
 		seedButton.addEventFilter(MouseEvent.MOUSE_PRESSED, e->setDrawingAction(DrawingAction.SEED));
-		clearSeedButton.setGraphic(FontIcon.of(FontAwesome.ERASER, 20));
+		clearSeedButton.setGraphic(FontIcon.of(FontAwesome.ERASER, 20, grainToolColor));
 		clearSeedButton.addEventFilter(MouseEvent.MOUSE_PRESSED, e->canvas.setSeedClearDrawing());
-		trashSeedButton.setGraphic(FontIcon.of(FontAwesome.TRASH, 20));
+		trashSeedButton.setGraphic(FontIcon.of(FontAwesome.TRASH, 20, grainToolColor));
 		trashSeedButton.addEventFilter(MouseEvent.MOUSE_PRESSED, e->canvas.setSeedTrashDrawing());
 
-		shadowButton.setGraphic(FontIcon.of(FontAwesome.REMOVE, 20));
+		Color shadowToolColor = Color.rgb(8, 35, 209);
+		shadowButton.setGraphic(FontIcon.of(FontAwesome.REMOVE, 20, shadowToolColor));
 		shadowButton.addEventFilter(MouseEvent.MOUSE_PRESSED, e->setDrawingAction(DrawingAction.SHADOW));
-		clearShadowButton.setGraphic(FontIcon.of(FontAwesome.ERASER, 20));
+		clearShadowButton.setGraphic(FontIcon.of(FontAwesome.ERASER, 20, shadowToolColor));
 		clearShadowButton.addEventFilter(MouseEvent.MOUSE_PRESSED, e->canvas.setShadowClearDrawing());
-		trashShadowButton.setGraphic(FontIcon.of(FontAwesome.TRASH, 20));
+		trashShadowButton.setGraphic(FontIcon.of(FontAwesome.TRASH, 20, shadowToolColor));
 		trashShadowButton.addEventFilter(MouseEvent.MOUSE_PRESSED, e->canvas.setShadowTrashDrawing());
 	}
 
@@ -294,10 +297,14 @@ public class WorkSpaceController {
                 markerIndexLabel.setText("Result Index:");
                 return;
             }
-            if(!markerFileStore.copyIndexToDefault(workspaceFolder, restoreIndex)) {
-                showInfoAlert("Restore Failed.");
-                return;
-            }
+            try {
+				markerFileStore.copyIndexToDefault(workspaceFolder, restoreIndex);
+			}catch (Exception ex){
+            	logger.error(ex.getMessage());
+            	showInfoAlert("Restore Image failed");
+            	return;
+			}
+
             setMarkerImage();
             doReSegment();
             markerIndexLabel.setText("Result Index:"+restoreIndex);
@@ -340,6 +347,7 @@ public class WorkSpaceController {
 	private void doSaveCanvas(boolean saveCache) {
 		File seedFile = new File(workspaceFolder, MarkerFile.SEED_FILE_NAME);
 		File shadowFile = new File(workspaceFolder, MarkerFile.SHADOW_FILE_NAME);
+		File confirmedFile = new File(workspaceFolder, MarkerFile.CONFIRMED_FILE_NAME);
 		canvas.doSaveCanvas(seedFile, shadowFile);
 		if(saveCache)
 		    markerFileQueue.add(workspaceFolder);
@@ -364,9 +372,9 @@ public class WorkSpaceController {
 		String workspace = selectWorkspace();
 		if(!workspaceService.openWorkspace(workspace))
 			return;
-		markerFileQueue.clearTemp(workspaceFolder);
 		workspaceMenuItem.setDisable(true);
 		workspaceFolder = new File(workspace);
+		markerFileQueue.clearTemp(workspaceFolder);
 		grainVO = grainService.getGrainVO(workspace);
 		if(grainVO==null) {
 			improtMenuItem.setDisable(false);
@@ -387,7 +395,7 @@ public class WorkSpaceController {
 	}
 	
 	private void enhanceBasicImage() {
-		grainVO = grainProcessing.enhaceToShow(grainVO);
+		grainVO = grainProcessing.enhanceToShow(grainVO);
 		Image image = Utils.mat2Image(grainVO.getEnhanceImg());
 		canvas.setBasicImage(image);
 	}
