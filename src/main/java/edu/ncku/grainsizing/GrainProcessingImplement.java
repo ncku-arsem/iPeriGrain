@@ -269,9 +269,11 @@ public class GrainProcessingImplement implements GrainProcessing{
 			dst.put(0, 0, imageArray);
 			Imgproc.dilate(dst, dstDilate, element);
 			List<MatOfPoint> contours = new ArrayList<>();
-			Imgproc.findContours(dstDilate, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
+			Mat hierarchy = new Mat();
+			Imgproc.findContours(dstDilate, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
 			allContours.addAll(contours);
 			dstDilate.release();
+			hierarchy.release();
 		}
 		dst.release();
 		vo.setResults(allContours.stream().filter(contours->{
