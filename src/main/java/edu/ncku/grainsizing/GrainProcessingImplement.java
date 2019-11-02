@@ -7,16 +7,14 @@ import edu.ncku.model.tempmarker.TempMarkerService;
 import edu.ncku.model.tempmarker.TempMarkerVO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.assertj.core.util.Lists;
 import org.opencv.core.*;
 import org.opencv.core.Core.MinMaxLocResult;
 import org.opencv.imgproc.Imgproc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -38,7 +36,7 @@ public class GrainProcessingImplement implements GrainProcessing{
 		vo.setDisMapImg(generateDistanceMap(vo));
 		vo.setMarkImg(generateMarker(vo));
 		vo.setIndexImg(segmentGrain(vo, null));
-		vo.setSegmentedImg(getBinarySegmentResut(vo.getIndexImg()));
+		vo.setSegmentedImg(getBinarySegmentResult(vo.getIndexImg()));
 		vo.setEllipseImg(null);
 
 		tempMarkerService.saveLastResult(workspace, new TempMarkerVO(vo.getSegmentedImg()));
@@ -89,14 +87,15 @@ public class GrainProcessingImplement implements GrainProcessing{
         Mat markers = Mat.zeros(vo.getMarkImg().size(), CvType.CV_32S);
         // Draw the foreground markers
         for (int i = 0; i < contours.size(); i++) {
-            Imgproc.drawContours(markers, contours, i, new Scalar(i + 1), -1);
+            Imgproc.drawContours(markers, Lists.list(contours.get(i)), 0, new Scalar(i + 1), -1);
         }
+
         vo.getConfig().setMaxIndex(contours.size());
         if(shadowVO != null) {
         	List<MatOfPoint> shadowContours = new ArrayList<>(100);
             Imgproc.findContours(shadowVO.getTemp(), shadowContours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
             for (int i = 0; i < shadowContours.size(); i++) {
-                Imgproc.drawContours(markers, shadowContours, i, new Scalar(vo.getConfig().getMaxIndex()+1), -1);
+                Imgproc.drawContours(markers, Lists.list(shadowContours.get(i)), 0, new Scalar(vo.getConfig().getMaxIndex()+1), -1);
             }
         }
         Mat m;
@@ -107,6 +106,7 @@ public class GrainProcessingImplement implements GrainProcessing{
         	m = vo.getSmoothImg();
 		}
         Imgproc.watershed(m, markers);
+
         vo.setOverlayImg(generateOverlay(markers, contours.size()));
 		return markers;
 	}
@@ -177,7 +177,14 @@ public class GrainProcessingImplement implements GrainProcessing{
 	@Override
 	public GrainVO doReSegmentGrainProcessing(GrainVO vo) {
 		TempMarkerVO lastResult = tempMarkerService.getLastResult(vo.getConfig().getWorkspace());
+		TempMarkerVO confirmedVO = tempMarkerService.getConfirmedMarker(vo.getConfig().getWorkspace());
 		TempMarkerVO seedVO = tempMarkerService.getSeedMarker(vo.getConfig().getWorkspace());
+		Optional<Mat> optional = getConfirmedImg(lastResult, confirmedVO);
+		if(optional.isPresent()) {
+			Mat confirmed = optional.get();
+			Core.bitwise_and(seedVO.getTemp(), confirmed, seedVO.getTemp());
+		}
+		
 		Mat newMarker = generateMergeMarker(vo, seedVO, lastResult.getTemp());
 		vo.setMarkImg(newMarker);
 		newMarker = generateSplitMarker(vo, seedVO);
@@ -188,11 +195,21 @@ public class GrainProcessingImplement implements GrainProcessing{
 
 		vo.setMarkImg(newMarker);
 		vo.setIndexImg(segmentGrain(vo, shadowVO));
-		vo.setSegmentedImg(getBinarySegmentResut(vo.getIndexImg()));
+		vo.setSegmentedImg(getBinarySegmentResult(vo.getIndexImg()));
 		vo.setEllipseImg(null);
 
 		tempMarkerService.saveLastResult(vo.getConfig().getWorkspace(), new TempMarkerVO(vo.getSegmentedImg()));
 		return vo;
+	}
+
+	private Optional<Mat> getConfirmedImg(TempMarkerVO lastResult, TempMarkerVO confirmedVO){
+		if(lastResult==null || lastResult.getTemp()==null || confirmedVO==null || confirmedVO.getTemp()==null)
+			return Optional.empty();
+		Mat flood = floodFillAsBlack(lastResult.getTemp(), confirmedVO.getTemp());
+		Mat confirmed = new Mat();
+		Core.bitwise_xor(lastResult.getTemp(), flood, confirmed);
+		Core.bitwise_not(confirmed, confirmed);
+		return Optional.of(confirmed);
 	}
 	
 	@Override
@@ -304,10 +321,8 @@ public class GrainProcessingImplement implements GrainProcessing{
 	}
 	/**
 	 * Turn index into binary image
-	 * @param indexMat
-	 * @return
 	 */
-	private Mat getBinarySegmentResut(Mat indexMat) {
+	private Mat getBinarySegmentResult(Mat indexMat) {
 		Mat binaryMarker = Mat.zeros(indexMat.size(), CvType.CV_8UC1);
 		indexMat.convertTo(binaryMarker, CvType.CV_8UC1);
         Imgproc.threshold(binaryMarker, binaryMarker, 0, 255, Imgproc.THRESH_BINARY);
