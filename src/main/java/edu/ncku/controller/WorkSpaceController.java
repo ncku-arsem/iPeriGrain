@@ -161,8 +161,11 @@ public class WorkSpaceController {
 		setNextPrevious();
 
 		mainPane.addEventFilter( KeyEvent.KEY_PRESSED, e->{
-			if(KeyCode.F==e.getCode())
+			if(KeyCode.F==e.getCode()) {
 				segmentCheckBox.setSelected(!segmentCheckBox.isSelected());
+			}else if(KeyCode.R==e.getCode()){
+				doReSegment();
+			}
 		});
 		markerCheckBox.selectedProperty().addListener((ov,old_val, new_val)->{
 			canvas.setBothMarkerVisibleAndEnable(new_val);
