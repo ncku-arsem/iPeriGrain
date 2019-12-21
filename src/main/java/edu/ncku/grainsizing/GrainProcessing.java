@@ -31,5 +31,5 @@ public interface GrainProcessing {
 	 * @param mergeVO
 	 * @return
 	 */
-	Mat generateMergeMarker(GrainVO vo, TempMarkerVO mergeVO, Mat lastResult);
+	Mat generateMergeMarker(GrainVO vo, TempMarkerVO mergeVO);
 }

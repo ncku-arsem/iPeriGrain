@@ -34,12 +34,12 @@ public class GrainProcessingImplement implements GrainProcessing {
         vo.setSmoothImg(smoothGrain(vo));
         vo.setNonGrainImg(identifyNonGrain(vo, grainParam));
         vo.setDisMapImg(generateDistanceMap(vo));
-        vo.setMarkImg(generateMarker(vo));
+        vo.setOriMarkImg(generateMarker(vo));
+        vo.setMarkImg(vo.getOriMarkImg());
         vo.setIndexImg(segmentGrain(vo, null));
         vo.setSegmentedImg(getBinarySegmentResult(vo.getIndexImg()));
         vo.setEllipseImg(null);
 
-        tempMarkerService.saveLastResult(workspace, new TempMarkerVO(vo.getSegmentedImg()));
         return vo;
     }
 
@@ -176,16 +176,9 @@ public class GrainProcessingImplement implements GrainProcessing {
 
     @Override
     public GrainVO doReSegmentGrainProcessing(GrainVO vo) {
-        TempMarkerVO lastResult = tempMarkerService.getLastResult(vo.getConfig().getWorkspace());
-        TempMarkerVO confirmedVO = tempMarkerService.getConfirmedMarker(vo.getConfig().getWorkspace());
         TempMarkerVO seedVO = tempMarkerService.getSeedMarker(vo.getConfig().getWorkspace());
-        Optional<Mat> optional = getConfirmedImg(lastResult, confirmedVO);
-        if (optional.isPresent()) {
-            Mat confirmed = optional.get();
-            Core.bitwise_and(seedVO.getTemp(), confirmed, seedVO.getTemp());
-        }
 
-        Mat newMarker = generateMergeMarker(vo, seedVO, lastResult.getTemp());
+        Mat newMarker = generateMergeMarker(vo, seedVO);
         vo.setMarkImg(newMarker);
         newMarker = generateSplitMarker(vo, seedVO);
         vo.setMarkImg(newMarker);
@@ -198,31 +191,15 @@ public class GrainProcessingImplement implements GrainProcessing {
         vo.setSegmentedImg(getBinarySegmentResult(vo.getIndexImg()));
         vo.setEllipseImg(null);
 
-        tempMarkerService.saveLastResult(vo.getConfig().getWorkspace(), new TempMarkerVO(vo.getSegmentedImg()));
         return vo;
     }
 
-    private Optional<Mat> getConfirmedImg(TempMarkerVO lastResult, TempMarkerVO confirmedVO) {
-        if (lastResult == null || lastResult.getTemp() == null || confirmedVO == null || confirmedVO.getTemp() == null)
-            return Optional.empty();
-        Mat flood = floodFillAsBlack(lastResult.getTemp(), confirmedVO.getTemp());
-        Mat confirmed = new Mat();
-        Core.bitwise_xor(lastResult.getTemp(), flood, confirmed);
-        Core.bitwise_not(confirmed, confirmed);
-        return Optional.of(confirmed);
-    }
-
     @Override
-    public Mat generateMergeMarker(GrainVO vo, TempMarkerVO mergeVO, Mat lastResult) {
+    public Mat generateMergeMarker(GrainVO vo, TempMarkerVO mergeVO) {
         if (mergeVO == null || mergeVO.getTemp() == null)
-            return lastResult;
+            return vo.getOriMarkImg();
         Mat resultMat = new Mat();
-        //Mat element = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_CROSS, new Size(3, 3), new Point(1, 1));
-        //Mat markImg = new Mat();
-        //Imgproc.erode(lastResult, markImg, element);
-        //Core.bitwise_or(markImg, mergeVO.getTemp(), resultMat);
-		Core.bitwise_or(vo.getMarkImg(), mergeVO.getTemp(), resultMat);
-        //markImg.release();
+		Core.bitwise_or(vo.getOriMarkImg(), mergeVO.getTemp(), resultMat);
         return resultMat;
     }
 

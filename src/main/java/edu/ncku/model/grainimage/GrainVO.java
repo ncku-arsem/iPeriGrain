@@ -13,6 +13,7 @@ public class GrainVO {
 	private Mat nonGrainImg;
 	private Mat disMapImg;
 	private Mat markImg;
+	private Mat oriMarkImg;
 	private Mat segmentedImg;
 	private Mat indexImg;
 	private Mat overlayImg;
@@ -97,5 +98,13 @@ public class GrainVO {
 	}
 	public void setEnhanceImg(Mat enhanceImg) {
 		this.enhanceImg = enhanceImg;
+	}
+
+	public Mat getOriMarkImg() {
+		return oriMarkImg;
+	}
+
+	public void setOriMarkImg(Mat oriMarkImg) {
+		this.oriMarkImg = oriMarkImg;
 	}
 }

@@ -350,7 +350,6 @@ public class WorkSpaceController {
 	private void doSaveCanvas(boolean saveCache) {
 		File seedFile = new File(workspaceFolder, MarkerFile.SEED_FILE_NAME);
 		File shadowFile = new File(workspaceFolder, MarkerFile.SHADOW_FILE_NAME);
-		File confirmedFile = new File(workspaceFolder, MarkerFile.CONFIRMED_FILE_NAME);
 		canvas.doSaveCanvas(seedFile, shadowFile);
 		if(saveCache)
 		    markerFileQueue.add(workspaceFolder);

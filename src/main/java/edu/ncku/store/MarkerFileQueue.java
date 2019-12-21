@@ -23,8 +23,6 @@ public class MarkerFileQueue {
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMddHHmmss");
 	private static final String SEED_PATTERN = "_seed%s.png";
 	private static final String SHADOW_PATTERN = "_shadow%s.png";
-	private static final String LAST_PATTERN = "_last%s.png";
-	private static final String CONFIRMED_PATTERN = "_confirmed%s.png";
 	private int capacity = 30;
 	private NextPreviousList<String> nextPreviousList = new NextPreviousList<>(capacity);
 
@@ -69,15 +67,11 @@ public class MarkerFileQueue {
 		String index = LocalDateTime.now().format(dateTimeFormatter);
 		File seed = getTmpFile(workspaceFolder, String.format(SEED_PATTERN, index));
 		File shadow = getTmpFile(workspaceFolder, String.format(SHADOW_PATTERN, index));
-		File last = getTmpFile(workspaceFolder, String.format(LAST_PATTERN, index));
-		File confirmed = getTmpFile(workspaceFolder, String.format(CONFIRMED_PATTERN, index));
 
 		boolean copySeed = copy(getDefaultSeedFile(workspaceFolder), seed);
 		boolean copyShadow = copy(getDefaultShadowFile(workspaceFolder), shadow);
-		boolean copyLast = copy(getDefaultLastFile(workspaceFolder), last);
-		boolean copyConfirmed = copy(getDefaultConfirmedFile(workspaceFolder), confirmed);
 
-		if(copySeed || copyShadow || copyLast || copyConfirmed) {
+		if(copySeed || copyShadow) {
 			if(nextPreviousList.isFull()) {
 				Optional<String> removeOptional = nextPreviousList.getLast();
 				removeOptional.ifPresent(s -> removeFile(workspaceFolder, s));
@@ -103,14 +97,10 @@ public class MarkerFileQueue {
 	private boolean restoreFromIndex(File workspaceFolder, String index){
 		File seed = getTmpFile(workspaceFolder, String.format(SEED_PATTERN, index));
 		File shadow = getTmpFile(workspaceFolder, String.format(SHADOW_PATTERN, index));
-		File last = getTmpFile(workspaceFolder, String.format(LAST_PATTERN, index));
-		File confirmed = getTmpFile(workspaceFolder, String.format(CONFIRMED_PATTERN, index));
 
 		boolean copySeed = copy(seed, getDefaultSeedFile(workspaceFolder));
 		boolean copyShadow = copy(shadow, getDefaultShadowFile(workspaceFolder));
-		boolean copyLast = copy(last, getDefaultLastFile(workspaceFolder));
-		boolean copyConfirmed = copy(confirmed, getDefaultConfirmedFile(workspaceFolder));
-		return copySeed || copyShadow || copyLast || copyConfirmed;
+		return copySeed || copyShadow;
 	}
 
 	private boolean copy(File src, File dst){
