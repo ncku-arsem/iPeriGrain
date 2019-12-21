@@ -34,14 +34,6 @@ public class MarkerFileQueue {
 		return new File(workspaceFolder, SHADOW_FILE_NAME);
 	}
 
-	private File getDefaultLastFile(File workspaceFolder) {
-		return new File(workspaceFolder, LAST_FILE_NAME);
-	}
-
-	private File getDefaultConfirmedFile(File workspaceFolder) {
-		return new File(workspaceFolder, CONFIRMED_FILE_NAME);
-	}
-
 	public void clearTemp(File workspaceFolder){
 		File folder = new File(workspaceFolder, TEMP_FOLDER);
 		if(!folder.exists())

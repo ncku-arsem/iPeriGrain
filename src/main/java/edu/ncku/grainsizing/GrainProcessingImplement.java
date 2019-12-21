@@ -34,12 +34,14 @@ public class GrainProcessingImplement implements GrainProcessing {
         vo.setSmoothImg(smoothGrain(vo));
         vo.setNonGrainImg(identifyNonGrain(vo, grainParam));
         vo.setDisMapImg(generateDistanceMap(vo));
-        vo.setOriMarkImg(generateMarker(vo));
-        vo.setMarkImg(vo.getOriMarkImg());
+        vo.setMarkImg(generateMarker(vo));
         vo.setIndexImg(segmentGrain(vo, null));
         vo.setSegmentedImg(getBinarySegmentResult(vo.getIndexImg()));
         vo.setEllipseImg(null);
-
+        Mat element = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new  Size(3, 3));
+        Mat oriMarkImg = new Mat();
+        Imgproc.erode(vo.getSegmentedImg(), oriMarkImg, element);
+        vo.setOriMarkImg(oriMarkImg);
         return vo;
     }
 

@@ -40,6 +40,7 @@ public class GrainDAOImplement implements GrainDAO{
 		vo.setNonGrainImg(getImageFromFile(config, GRAIN_NON));
 		vo.setDisMapImg(getImageFromFile(config, GRAIN_DIS_MAP));
 		vo.setMarkImg(getImageFromFile(config, GRAIN_MARK));
+		vo.setOriMarkImg(vo.getMarkImg());
 		vo.setOverlayImg(getImageFromFile(config, GRAIN_OVERLAY));
 		vo.setSegmentedImg(getImageFromFile(config, GRAIN_RESULT));
 		//can't read 32S image
