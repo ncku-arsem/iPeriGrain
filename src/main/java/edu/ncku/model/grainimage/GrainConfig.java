@@ -8,6 +8,7 @@ public class GrainConfig {
 	private double height;
 	private double alpha = 1.0;
 	private int beta = 0;
+	private GrainPointVO oriPoint;
 	public String getWorkspace() {
 		return workspace;
 	}
@@ -50,6 +51,15 @@ public class GrainConfig {
 	public void setBeta(int beta) {
 		this.beta = beta;
 	}
+
+	public GrainPointVO getOriPoint() {
+		return oriPoint;
+	}
+
+	public void setOriPoint(GrainPointVO oriPoint) {
+		this.oriPoint = oriPoint;
+	}
+
 	@Override
 	public String toString() {
 		return "GrainConfig [workspace=" + workspace + ", status=" + status + ", maxIndex=" + maxIndex + "]";

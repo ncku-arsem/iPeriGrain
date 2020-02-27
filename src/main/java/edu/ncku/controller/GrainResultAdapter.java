@@ -3,6 +3,7 @@ package edu.ncku.controller;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.ncku.model.grainimage.GrainPointVO;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.opencv.core.MatOfPoint;
@@ -26,15 +27,16 @@ public class GrainResultAdapter implements GrainShape{
 	private Polygon polygon;
 	private RotatedRect ellipse;
 	private double height;
-	public GrainResultAdapter(GrainResultVO vo, double height) {
+
+	public GrainResultAdapter(GrainResultVO vo, double height, GrainPointVO oriPoint) {
 		MatOfPoint points = vo.getContour();
 		Point[] pointArray = points.toArray();
 		
 		List<Coordinate> list = new LinkedList<Coordinate>();
 		for(Point point:pointArray) 
-			list.add(new Coordinate((point.x + 0.5)*SCALE, (-0.5 - point.y)*SCALE));
+			list.add(new Coordinate((oriPoint.getX() + point.x + 0.5)*SCALE, (oriPoint.getY() - 0.5 - point.y)*SCALE));
 		Point firstOne = pointArray[0];
-		list.add(new Coordinate((firstOne.x + 0.5)*SCALE, (-0.5 - firstOne.y)*SCALE));
+		list.add(new Coordinate((oriPoint.getX() + firstOne.x + 0.5)*SCALE, (oriPoint.getY() - 0.5 - firstOne.y)*SCALE));
 
 		LinearRing shell = geometryFactory.createLinearRing(list.toArray(new Coordinate[list.size()]));
 		polygon = geometryFactory.createPolygon(shell, null);
