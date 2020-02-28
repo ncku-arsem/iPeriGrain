@@ -30,7 +30,7 @@ public class GrainProcessingImplement implements GrainProcessing {
 
     @Override
     public GrainVO doGrainProcessing(String workspace, GrainParam grainParam) {
-        GrainVO vo = grainService.getGrainVO(workspace);
+        GrainVO vo = grainService.getGrainVO(workspace, Optional.empty());
         vo.setSmoothImg(smoothGrain(vo));
         vo.setNonGrainImg(identifyNonGrain(vo, grainParam));
         vo.setDisMapImg(generateDistanceMap(vo));

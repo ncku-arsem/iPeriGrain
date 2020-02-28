@@ -363,9 +363,10 @@ public class WorkSpaceController {
 		Optional<File> oriImgOptional = selectImageToImport(workspaceFolder);
 		if (!oriImgOptional.isPresent())
 			return;
-		grainVO = grainService.getGrainVO(workspaceFolder.getAbsolutePath());
-		if(grainVO==null) 
+		grainVO = grainService.getGrainVO(workspaceFolder.getAbsolutePath(), oriImgOptional);
+		if(grainVO == null)
 			return;
+
 		improtMenuItem.setDisable(true);
 		Image image = Utils.mat2Image(grainVO.getOriginalImg());
 		canvas.initCanvas(image);
@@ -380,7 +381,7 @@ public class WorkSpaceController {
 		workspaceMenuItem.setDisable(true);
 		workspaceFolder = new File(workspace);
 		markerFileQueue.clearTemp(workspaceFolder);
-		grainVO = grainService.getGrainVO(workspace);
+		grainVO = grainService.getGrainVO(workspace, Optional.empty());
 		if(grainVO==null) {
 			improtMenuItem.setDisable(false);
 			return;

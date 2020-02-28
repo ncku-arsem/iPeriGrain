@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Optional;
+
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class GrainServiceTests {
@@ -26,14 +28,14 @@ public class GrainServiceTests {
 	
 	@Test
 	public void testGetImage() throws Exception {
-		GrainVO vo = grainService.getGrainVO(workspace);
+		GrainVO vo = grainService.getGrainVO(workspace, Optional.empty());
 		Assert.assertNotNull(vo);
 		Assert.assertNotNull(vo.getOriginalImg());
 	}
 
 	@Test
 	public void testSaveImage() throws Exception {
-		GrainVO vo = grainService.getGrainVO(workspace);
+		GrainVO vo = grainService.getGrainVO(workspace, Optional.empty());
 		grainService.saveImage(vo);
 	}
 }

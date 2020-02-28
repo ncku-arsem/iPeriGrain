@@ -15,21 +15,23 @@ import org.opencv.core.Mat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.util.Optional;
+
 @Service
 public class GrainServiceImpl implements GrainService {
 	private final Logger logger = LogManager.getLogger(GrainServiceImpl.class);
-	private GrainGeoInfoService grainGeoInfoService;
 	private GrainConfigService configService;
 	private GrainDAO grainDAO;
 
 	@Autowired
-	public GrainServiceImpl(GrainGeoInfoService grainGeoInfoService, GrainDAO grainDAO, GrainConfigService configService){
+	public GrainServiceImpl(GrainDAO grainDAO, GrainConfigService configService){
 		this.grainDAO = grainDAO;
 		this.configService = configService;
-		this.grainGeoInfoService = grainGeoInfoService;
 	}
-	
-	public GrainVO getGrainVO(String workspace) {
+
+	@Override
+	public GrainVO getGrainVO(String workspace, Optional<File> imgOptional) {
 		logger.info("getGrainVO:{}", workspace);
 		GrainConfig config = configService.getGrainConfig(workspace);
 		logger.info("getGrainVO config:{}", config);
@@ -37,9 +39,11 @@ public class GrainServiceImpl implements GrainService {
 		if(vo == null)
 			return null;
 		vo.setOriginalImg(convertTo8UC1(vo.getOriginalImg()));
+		configService.setGrainOriPoint(vo.getConfig(), imgOptional);
 		return vo;
 	}
-	
+
+	@Override
 	public void saveImage(GrainVO vo) {
 		grainDAO.saveGrainVO(vo);
 	}
