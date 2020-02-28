@@ -1,4 +1,4 @@
-package edu.ncku.model.grainimage.vo;
+package edu.ncku.model.grain.vo;
 
 public class GrainPointVO {
     private double x;

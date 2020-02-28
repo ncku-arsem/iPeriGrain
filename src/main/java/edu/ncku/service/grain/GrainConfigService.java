@@ -1,4 +1,6 @@
-package edu.ncku.model.grainimage;
+package edu.ncku.service.grain;
+
+import edu.ncku.model.grain.vo.GrainConfig;
 
 import java.io.File;
 import java.util.Optional;

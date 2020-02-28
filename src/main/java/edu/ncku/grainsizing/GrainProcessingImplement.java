@@ -1,10 +1,10 @@
 package edu.ncku.grainsizing;
 
-import edu.ncku.model.grainimage.vo.GrainResultVO;
-import edu.ncku.model.grainimage.GrainService;
-import edu.ncku.model.grainimage.vo.GrainVO;
-import edu.ncku.model.tempmarker.TempMarkerService;
-import edu.ncku.model.tempmarker.TempMarkerVO;
+import edu.ncku.model.grain.vo.GrainResultVO;
+import edu.ncku.service.grain.GrainService;
+import edu.ncku.model.grain.vo.GrainVO;
+import edu.ncku.service.tempmarker.service.TempMarkerService;
+import edu.ncku.model.tempmarker.vo.TempMarkerVO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.assertj.core.util.Lists;

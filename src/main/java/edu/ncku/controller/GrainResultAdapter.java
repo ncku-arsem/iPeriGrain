@@ -3,7 +3,7 @@ package edu.ncku.controller;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.ncku.model.grainimage.vo.GrainPointVO;
+import edu.ncku.model.grain.vo.GrainPointVO;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
@@ -15,7 +15,7 @@ import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 
 import edu.ncku.grainsizing.export.GrainShape;
-import edu.ncku.model.grainimage.vo.GrainResultVO;
+import edu.ncku.model.grain.vo.GrainResultVO;
 
 public class GrainResultAdapter implements GrainShape{
 	private static double SCALE = 1.0/100.0;

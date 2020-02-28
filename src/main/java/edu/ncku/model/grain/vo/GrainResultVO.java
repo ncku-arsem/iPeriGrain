@@ -1,4 +1,4 @@
-package edu.ncku.model.grainimage.vo;
+package edu.ncku.model.grain.vo;
 
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.RotatedRect;

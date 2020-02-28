@@ -1,7 +1,11 @@
-package edu.ncku.model.grainimage.impl;
+package edu.ncku.service.grain.impl;
 
-import edu.ncku.model.grainimage.*;
-import edu.ncku.model.grainimage.vo.GrainPointVO;
+import edu.ncku.model.grain.dao.GrainConfigDAO;
+import edu.ncku.service.grain.GrainConfigService;
+import edu.ncku.service.grain.GrainGeoInfoService;
+import edu.ncku.model.grain.vo.GrainConfig;
+import edu.ncku.model.grain.vo.GrainPointVO;
+import edu.ncku.model.grain.vo.GrainStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

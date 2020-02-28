@@ -1,7 +1,7 @@
-package edu.ncku.model.grainimage.impl;
+package edu.ncku.service.grain.impl;
 
-import edu.ncku.model.grainimage.GrainGeoInfoService;
-import edu.ncku.model.grainimage.vo.GrainPointVO;
+import edu.ncku.service.grain.GrainGeoInfoService;
+import edu.ncku.model.grain.vo.GrainPointVO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

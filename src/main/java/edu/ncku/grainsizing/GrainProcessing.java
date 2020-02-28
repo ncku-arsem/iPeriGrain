@@ -2,8 +2,8 @@ package edu.ncku.grainsizing;
 
 import org.opencv.core.Mat;
 
-import edu.ncku.model.grainimage.vo.GrainVO;
-import edu.ncku.model.tempmarker.TempMarkerVO;
+import edu.ncku.model.grain.vo.GrainVO;
+import edu.ncku.model.tempmarker.vo.TempMarkerVO;
 
 public interface GrainProcessing {
 	

@@ -1,9 +1,9 @@
-package edu.ncku.model.grainimage.impl;
+package edu.ncku.model.grain.impl;
 
 import com.google.gson.Gson;
-import edu.ncku.model.grainimage.GrainConfig;
-import edu.ncku.model.grainimage.GrainConfigDAO;
-import edu.ncku.model.grainimage.GrainStatus;
+import edu.ncku.model.grain.vo.GrainConfig;
+import edu.ncku.model.grain.dao.GrainConfigDAO;
+import edu.ncku.model.grain.vo.GrainStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

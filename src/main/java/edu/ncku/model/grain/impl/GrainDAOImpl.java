@@ -1,8 +1,8 @@
-package edu.ncku.model.grainimage.impl;
+package edu.ncku.model.grain.impl;
 
-import edu.ncku.model.grainimage.GrainConfig;
-import edu.ncku.model.grainimage.GrainDAO;
-import edu.ncku.model.grainimage.vo.GrainVO;
+import edu.ncku.model.grain.vo.GrainConfig;
+import edu.ncku.model.grain.dao.GrainDAO;
+import edu.ncku.model.grain.vo.GrainVO;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;

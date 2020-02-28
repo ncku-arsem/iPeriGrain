@@ -1,4 +1,6 @@
-package edu.ncku.model.grainimage;
+package edu.ncku.model.grain.dao;
+
+import edu.ncku.model.grain.vo.GrainConfig;
 
 public interface GrainConfigDAO {
 	GrainConfig getInitGrainConfig(String workspace);

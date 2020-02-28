@@ -1,9 +1,7 @@
-package edu.ncku.model.grainimage.vo;
+package edu.ncku.model.grain.vo;
 
 import java.util.List;
 
-import edu.ncku.model.grainimage.GrainConfig;
-import edu.ncku.model.grainimage.vo.GrainResultVO;
 import org.opencv.core.Mat;
 
 public class GrainVO {
