@@ -1,5 +1,6 @@
 package edu.ncku.model.grainimage;
 
+import edu.ncku.model.grainimage.vo.GrainVO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.opencv.core.Core;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GrainService {
-	private final Logger logger = LogManager.getLogger(GrainService.class.getClass());
+	private final Logger logger = LogManager.getLogger(GrainService.class);
 	@Autowired
 	private GrainDAO grainDAO;
 	

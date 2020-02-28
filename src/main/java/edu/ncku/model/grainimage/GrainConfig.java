@@ -1,5 +1,7 @@
 package edu.ncku.model.grainimage;
 
+import edu.ncku.model.grainimage.vo.GrainPointVO;
+
 public class GrainConfig {
 	private String workspace;
 	private GrainStatus status = GrainStatus.UNSEGMENTED;

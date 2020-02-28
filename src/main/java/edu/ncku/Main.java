@@ -8,8 +8,10 @@ import javafx.stage.Stage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
+@PropertySource("classpath:/resource/geotiff.properties")
 public class Main extends Application {
 	
 	private ConfigurableApplicationContext springContext;

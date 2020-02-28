@@ -1,8 +1,8 @@
 package edu.ncku.grainsizing;
 
-import edu.ncku.model.grainimage.GrainResultVO;
+import edu.ncku.model.grainimage.vo.GrainResultVO;
 import edu.ncku.model.grainimage.GrainService;
-import edu.ncku.model.grainimage.GrainVO;
+import edu.ncku.model.grainimage.vo.GrainVO;
 import edu.ncku.model.tempmarker.TempMarkerService;
 import edu.ncku.model.tempmarker.TempMarkerVO;
 import org.apache.logging.log4j.LogManager;

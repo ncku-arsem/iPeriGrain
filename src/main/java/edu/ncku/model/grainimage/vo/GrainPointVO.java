@@ -1,8 +1,13 @@
-package edu.ncku.model.grainimage;
+package edu.ncku.model.grainimage.vo;
 
 public class GrainPointVO {
     private double x;
     private double y;
+
+    public GrainPointVO(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
 
     public double getX() {
         return x;

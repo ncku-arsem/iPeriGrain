@@ -1,5 +1,6 @@
 package edu.ncku.model.grainimage;
 
+import edu.ncku.model.grainimage.vo.GrainVO;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class GrainServiceTests {
 		Assert.assertNotNull(vo);
 		Assert.assertNotNull(vo.getOriginalImg());
 	}
-	
+
 	@Test
 	public void testSaveImage() throws Exception {
 		GrainVO vo = grainService.getGrainVO(workspace);

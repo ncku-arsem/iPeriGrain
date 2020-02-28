@@ -3,6 +3,7 @@ package edu.ncku.model.grainimage;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import edu.ncku.model.grainimage.vo.GrainVO;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
