@@ -2,7 +2,9 @@ package edu.ncku.model.workspace;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
+import com.google.gson.internal.$Gson$Preconditions;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class WorkspaceDAOImplement implements WorkspaceDAO{
 	
 	private final static String ORIGINAL = "original";
+
 	@Override
 	public boolean ceateWorkspace(String workspace) {
 		File folder = new File(workspace);
@@ -28,19 +31,19 @@ public class WorkspaceDAOImplement implements WorkspaceDAO{
 	}
 
 	@Override
-	public boolean importImageToWorkspace(String workspace, String filePath) {
+	public Optional<File> importImageToWorkspace(String workspace, String filePath) {
 		File folder = new File(workspace);
-		if(folder==null || !folder.isDirectory())
-			return false;
+		if (!folder.isDirectory())
+			return Optional.empty();
 		File src = new File(filePath);
 		String extension = FilenameUtils.getExtension(filePath);
 		File dst = new File(folder, ORIGINAL+"."+extension);
 		try {
 			FileUtils.copyFile(src, dst);
+			return Optional.of(dst);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return false;
 		}
-		return true;
+		return Optional.empty();
 	}
 }

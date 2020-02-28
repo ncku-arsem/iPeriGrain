@@ -48,6 +48,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -359,7 +360,9 @@ public class WorkSpaceController {
 		if(workspaceFolder==null || !workspaceFolder.isDirectory())
 			return;
 		workspaceMenuItem.setDisable(true);
-		selectImageToImport(workspaceFolder);
+		Optional<File> oriImgOptional = selectImageToImport(workspaceFolder);
+		if (!oriImgOptional.isPresent())
+			return;
 		grainVO = grainService.getGrainVO(workspaceFolder.getAbsolutePath());
 		if(grainVO==null) 
 			return;
@@ -498,7 +501,7 @@ public class WorkSpaceController {
 		return selectedDirectory==null ? "":selectedDirectory.getAbsolutePath();
 	}
 	
-	private boolean selectImageToImport(File workspaceFolder) {
+	private Optional<File> selectImageToImport(File workspaceFolder) {
 		Stage stage = (Stage) menuBar.getScene().getWindow();
 		FileChooser chooser = new FileChooser();
 		chooser.setInitialDirectory(workspaceFolder);

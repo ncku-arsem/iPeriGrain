@@ -1,7 +1,10 @@
 package edu.ncku.model.workspace;
 
+import java.io.File;
+import java.util.Optional;
+
 public interface WorkspaceDAO {
-	public boolean openWorkspace(String workspace);
-	public boolean ceateWorkspace(String workspace);
-	public boolean importImageToWorkspace(String workspace, String filePath);
+	boolean openWorkspace(String workspace);
+	boolean ceateWorkspace(String workspace);
+	Optional<File> importImageToWorkspace(String workspace, String filePath);
 }

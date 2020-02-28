@@ -14,40 +14,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class GrainService {
 	private final Logger logger = LogManager.getLogger(GrainService.class);
-	@Autowired
+	private GrainGeoInfoService grainGeoInfoService;
+	private GrainConfigService configService;
 	private GrainDAO grainDAO;
+
+	@Autowired
+	public GrainService(GrainGeoInfoService grainGeoInfoService, GrainDAO grainDAO, GrainConfigService configService){
+		this.grainDAO = grainDAO;
+		this.configService = configService;
+		this.grainGeoInfoService = grainGeoInfoService;
+	}
 	
 	public GrainVO getGrainVO(String workspace) {
 		logger.info("getGrainVO:{}", workspace);
-		GrainConfig config = grainDAO.getGrainConfig(workspace);
-		if(config==null)
-			config = grainDAO.getInitGrainConfig(workspace);
-		logger.info("getGrainVO:{}", config);
+		GrainConfig config = configService.getGrainConfig(workspace);
+		logger.info("getGrainVO config:{}", config);
 		GrainVO vo = grainDAO.getGrainVO(config);
-		if(vo==null)
+		if(vo == null)
 			return null;
 		vo.setOriginalImg(convertTo8UC1(vo.getOriginalImg()));
 		return vo;
-	}
-	
-	public GrainConfig getGrainConfig(String workspace) {
-		return grainDAO.getGrainConfig(workspace);
-	}
-
-	public GrainConfig getInitIfNotExistConfig(String workspace) {
-		GrainConfig config = this.getGrainConfig(workspace);
-		if(config!=null) return config;
-		config = new GrainConfig();
-		config.setWorkspace(workspace);
-		config.setStatus(GrainStatus.UNSEGMENTED);
-		this.saveGrainConfig(config);
-		return config;
-	}
-
-	public void saveGrainConfig(GrainConfig vo) {
-		if(vo.getStatus()==null) 
-			vo.setStatus(GrainStatus.UNSEGMENTED);
-		grainDAO.saveGrainConfig(vo);
 	}
 	
 	public void saveImage(GrainVO vo) {

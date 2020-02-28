@@ -4,6 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.util.Optional;
+
 @Service
 public class WorkspaceService {
 	
@@ -22,7 +25,7 @@ public class WorkspaceService {
 		return workspaceDAO.openWorkspace(workspace);
 	}
 	
-	public boolean importImageToWorkspace(String workspace, String filePath) {
+	public Optional<File> importImageToWorkspace(String workspace, String filePath) {
 		return workspaceDAO.importImageToWorkspace(workspace, filePath);
 	}
 }

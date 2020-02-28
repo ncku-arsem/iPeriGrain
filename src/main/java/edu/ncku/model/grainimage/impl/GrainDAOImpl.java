@@ -1,9 +1,7 @@
 package edu.ncku.model.grainimage.impl;
 
-import com.google.gson.Gson;
 import edu.ncku.model.grainimage.GrainConfig;
 import edu.ncku.model.grainimage.GrainDAO;
-import edu.ncku.model.grainimage.GrainStatus;
 import edu.ncku.model.grainimage.vo.GrainVO;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,9 +16,7 @@ import java.io.*;
 @Component
 public class GrainDAOImpl implements GrainDAO {
 	private final Logger logger = LogManager.getLogger(GrainDAOImpl.class);
-	
-	private Gson gson = new Gson();
-	private static final String GRAIN_CONFIG = "config.json";
+
 	private final static String FILE_PATTERN = "%s"+File.separator+"%s";
 	private final static String GRAIN_ORI = "original";
 	private final static String GRAIN_ORI_8Bit = "01_original.png";
@@ -71,37 +67,10 @@ public class GrainDAOImpl implements GrainDAO {
 	private String getOriginalImageExtend(File f){
 		if(!f.exists() || !f.isDirectory())
 			return "";
-		File [] files = f.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return StringUtils.startsWith(name, GRAIN_ORI);
-			}
-		});
+		File [] files = f.listFiles((dir, name) -> StringUtils.startsWith(name, GRAIN_ORI));
 		if(files==null || files.length<1)
 			return "";
 		return FilenameUtils.getExtension(files[0].getPath());
-	}
-
-	@Override
-	public GrainConfig getGrainConfig(String workspace) {
-		File configFile = getConfigFile(workspace);
-		GrainConfig config = null;
-		if(!configFile.exists()) {
-			logger.info("getGrainConfig config file not exists.");
-			return config;
-		}
-		FileReader fr = null;
-		try {
-			fr = new FileReader(configFile);
-			config = gson.fromJson(fr, GrainConfig.class);
-			if(config==null || StringUtils.isBlank(config.getWorkspace()))
-				return null;
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Can't find config file.");
-		} finally {
-			try {if(fr!=null) fr.close();} catch (IOException e) {}
-		}
-		return config;
 	}
 
 	@Override
@@ -118,7 +87,6 @@ public class GrainDAOImpl implements GrainDAO {
 		//can't save 32S image
 		//saveImageToFile(vo.getIndexImg(), GRAIN_INDEX, cfg);
 		saveImageToFile(vo.getEllipseImg(), GRAIN_ELLIPSE, cfg);
-		saveGrainConfig(vo.getConfig());
 	}
 	
 	private boolean saveImageToFile(Mat mat, String fileName, GrainConfig cfg) {
@@ -127,31 +95,10 @@ public class GrainDAOImpl implements GrainDAO {
 		return s;
 	}
 
-	@Override
-	public void saveGrainConfig(GrainConfig vo) {
-		File configFile = getConfigFile(vo.getWorkspace());
-		FileWriter fw = null;
-		try {
-			if(!configFile.exists())
-				configFile.createNewFile();
-			fw = new FileWriter(configFile);
-			fw.write(gson.toJson(vo));
-		} catch (IOException e) {
-			throw new RuntimeException(e.getMessage());
-		} finally {
-			try {if(fw!=null) fw.close();} catch (IOException e) {}
-		}
-	}
-	
 	private Mat getImageFromFile(GrainConfig config, String fileName) {
 		File f = new File(getFileFormatString(config.getWorkspace(), fileName));
 		if(!f.exists()) return null;
 		return readFromFile(f);
-	}
-	
-	private File getConfigFile(String workspace) {
-		File f = new File(getFileFormatString(workspace, GRAIN_CONFIG));
-		return f;
 	}
 	
 	private String getFileFormatString(String workspace, String fileName) {
@@ -165,14 +112,5 @@ public class GrainDAOImpl implements GrainDAO {
 	
 	private boolean saveImageToFile(File file, Mat mat) {
 		return Imgcodecs.imwrite(file.getAbsolutePath(), mat);
-	}
-
-	@Override
-	public GrainConfig getInitGrainConfig(String workspace) {
-		GrainConfig vo = new GrainConfig();
-		vo.setStatus(GrainStatus.UNSEGMENTED);
-		vo.setWorkspace(workspace);
-		vo.setMaxIndex(-1);
-		return vo;
 	}
 }
