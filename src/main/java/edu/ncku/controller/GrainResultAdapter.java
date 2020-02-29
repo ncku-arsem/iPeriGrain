@@ -25,9 +25,9 @@ public class GrainResultAdapter implements GrainShape{
 	private static final GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
 	private Polygon polygon;
 	private RotatedRect ellipse;
-	private double height;
+	private double oriY;
 
-	public GrainResultAdapter(GrainResultVO vo, double height, GrainPointVO oriPoint) {
+	public GrainResultAdapter(GrainResultVO vo, GrainPointVO oriPoint) {
 		MatOfPoint points = vo.getContour();
 		Point[] pointArray = points.toArray();
 		
@@ -40,7 +40,7 @@ public class GrainResultAdapter implements GrainShape{
 		LinearRing shell = geometryFactory.createLinearRing(list.toArray(new Coordinate[list.size()]));
 		polygon = geometryFactory.createPolygon(shell, null);
 		ellipse = vo.getEllipse();
-		this.height = height;
+		this.oriY = oriPoint.getY();
 	}
 	
 	@Override
@@ -55,7 +55,7 @@ public class GrainResultAdapter implements GrainShape{
 
 	@Override
 	public double getCenterY() {
-		return (height - ellipse.center.y)*SCALE;
+		return oriY - (ellipse.center.y)*SCALE;
 	}
 
 	@Override

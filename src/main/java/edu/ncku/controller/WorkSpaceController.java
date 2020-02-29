@@ -424,7 +424,7 @@ public class WorkSpaceController {
 			List<GrainResultVO> list = grainVO.getResults();
 			List<GrainShape> grainShapes = new LinkedList<>();
 			for (GrainResultVO vo : list) {
-				grainShapes.add(new GrainResultAdapter(vo, grainVO.getConfig().getHeight(), grainVO.getConfig().getOriPoint()));
+				grainShapes.add(new GrainResultAdapter(vo, grainVO.getConfig().getOriPoint()));
 			}
 			grainExport.doExportGrain(grainShapes, exportFile.getAbsolutePath());
 			setEllipse(grainVO);
