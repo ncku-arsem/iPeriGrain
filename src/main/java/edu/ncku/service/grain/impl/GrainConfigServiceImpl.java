@@ -42,7 +42,7 @@ public class GrainConfigServiceImpl implements GrainConfigService {
 
     @Override
     public void setGrainOriPoint(GrainConfig config, Optional<File> oriImageOptional) {
-        if (!oriImageOptional.isPresent())
+        if (config.getOriPoint() != null || !oriImageOptional.isPresent())
             return;
         GrainPointVO pointVO = geoInfoService.getOriPoint(oriImageOptional.get());
         config.setOriPoint(pointVO);
