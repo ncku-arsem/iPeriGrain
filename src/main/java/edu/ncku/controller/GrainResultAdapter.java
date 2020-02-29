@@ -33,9 +33,9 @@ public class GrainResultAdapter implements GrainShape{
 		
 		List<Coordinate> list = new LinkedList<Coordinate>();
 		for(Point point:pointArray) 
-			list.add(new Coordinate((oriPoint.getX() + point.x + 0.5)*SCALE, (oriPoint.getY() - 0.5 - point.y)*SCALE));
+			list.add(new Coordinate(oriPoint.getX()+(point.x + 0.5)*SCALE, oriPoint.getY()+(- 0.5 - point.y)*SCALE));
 		Point firstOne = pointArray[0];
-		list.add(new Coordinate((oriPoint.getX() + firstOne.x + 0.5)*SCALE, (oriPoint.getY() - 0.5 - firstOne.y)*SCALE));
+		list.add(new Coordinate(oriPoint.getX()+(firstOne.x + 0.5)*SCALE, oriPoint.getY()+(- 0.5 - firstOne.y)*SCALE));
 
 		LinearRing shell = geometryFactory.createLinearRing(list.toArray(new Coordinate[list.size()]));
 		polygon = geometryFactory.createPolygon(shell, null);

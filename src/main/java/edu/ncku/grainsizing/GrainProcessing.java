@@ -7,7 +7,7 @@ import edu.ncku.model.tempmarker.vo.TempMarkerVO;
 
 public interface GrainProcessing {
 	
-	GrainVO doGrainProcessing(String workspace, GrainParam param);
+	void doGrainProcessing(GrainVO vo, GrainParam param);
 	Mat smoothGrain(GrainVO vo);
 	Mat identifyNonGrain(GrainVO vo, GrainParam grainParam);
 	Mat generateDistanceMap(GrainVO vo);

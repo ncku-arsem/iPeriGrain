@@ -340,7 +340,7 @@ public class WorkSpaceController {
 		GrainParam param = new GrainParam();
 		param.setCannyMaxThreshold(Integer.parseInt(minThreshold.getText()));
 		param.setCannyMaxThreshold(Integer.parseInt(maxThreshold.getText()));
-		grainVO = grainProcessing.doGrainProcessing(workspaceFolder.getAbsolutePath(), param);
+		grainProcessing.doGrainProcessing(grainVO, param);
 		grainService.saveImage(grainVO);
 		segmentCheckBox.setSelected(setOverlay(grainVO));
 		setMarkerImage();

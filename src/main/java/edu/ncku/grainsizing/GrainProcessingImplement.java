@@ -29,8 +29,7 @@ public class GrainProcessingImplement implements GrainProcessing {
     private TempMarkerService tempMarkerService;
 
     @Override
-    public GrainVO doGrainProcessing(String workspace, GrainParam grainParam) {
-        GrainVO vo = grainService.getGrainVO(workspace, Optional.empty());
+    public void doGrainProcessing(GrainVO vo, GrainParam grainParam) {
         vo.setSmoothImg(smoothGrain(vo));
         vo.setNonGrainImg(identifyNonGrain(vo, grainParam));
         vo.setDisMapImg(generateDistanceMap(vo));
@@ -42,7 +41,6 @@ public class GrainProcessingImplement implements GrainProcessing {
         Mat oriMarkImg = new Mat();
         Imgproc.erode(vo.getSegmentedImg(), oriMarkImg, element);
         vo.setOriMarkImg(oriMarkImg);
-        return vo;
     }
 
     @Override
