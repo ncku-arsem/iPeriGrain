@@ -291,18 +291,28 @@ public class WorkSpaceController {
 
 	private void initializeToggleButton() {
 	    Color grainToolColor = Color.rgb(209, 79, 8);
+	    seedButton.setTooltip(new Tooltip("add grain marker"));
 		seedButton.setGraphic(FontIcon.of(FontAwesome.PENCIL, 20, grainToolColor));
 		seedButton.addEventFilter(MouseEvent.MOUSE_PRESSED, e->setDrawingAction(DrawingAction.SEED));
+
+		clearSeedButton.setTooltip(new Tooltip("erase grain marker - by pixel"));
 		clearSeedButton.setGraphic(FontIcon.of(FontAwesome.ERASER, 20, grainToolColor));
 		clearSeedButton.addEventFilter(MouseEvent.MOUSE_PRESSED, e->canvas.setSeedClearDrawing());
+
+		trashSeedButton.setTooltip(new Tooltip("delete grain marker - by connected pixels"));
 		trashSeedButton.setGraphic(FontIcon.of(FontAwesome.TRASH, 20, grainToolColor));
 		trashSeedButton.addEventFilter(MouseEvent.MOUSE_PRESSED, e->canvas.setSeedTrashDrawing());
 
 		Color shadowToolColor = Color.rgb(8, 35, 209);
+		shadowButton.setTooltip(new Tooltip("add background marker"));
 		shadowButton.setGraphic(FontIcon.of(FontAwesome.REMOVE, 20, shadowToolColor));
 		shadowButton.addEventFilter(MouseEvent.MOUSE_PRESSED, e->setDrawingAction(DrawingAction.SHADOW));
+
+		clearShadowButton.setTooltip(new Tooltip("erase background marker - by pixel"));
 		clearShadowButton.setGraphic(FontIcon.of(FontAwesome.ERASER, 20, shadowToolColor));
 		clearShadowButton.addEventFilter(MouseEvent.MOUSE_PRESSED, e->canvas.setShadowClearDrawing());
+
+		trashShadowButton.setTooltip(new Tooltip("delete background marker - by connected pixels"));
 		trashShadowButton.setGraphic(FontIcon.of(FontAwesome.TRASH, 20, shadowToolColor));
 		trashShadowButton.addEventFilter(MouseEvent.MOUSE_PRESSED, e->canvas.setShadowTrashDrawing());
 	}
