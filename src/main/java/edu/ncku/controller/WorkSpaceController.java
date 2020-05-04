@@ -1,6 +1,5 @@
 package edu.ncku.controller;
 
-import com.gluonhq.charm.glisten.control.ToggleButtonGroup;
 import edu.ncku.Utils;
 import edu.ncku.canvas.DrawingAction;
 import edu.ncku.canvas.PannableCanvas;
@@ -9,7 +8,6 @@ import edu.ncku.grainsizing.GrainParam;
 import edu.ncku.grainsizing.GrainProcessing;
 import edu.ncku.grainsizing.export.GrainExport;
 import edu.ncku.grainsizing.export.GrainShape;
-import edu.ncku.model.grain.vo.GrainConfig;
 import edu.ncku.model.grain.vo.GrainResultVO;
 import edu.ncku.model.program.vo.ProgramConfigVO;
 import edu.ncku.service.ProgramConfigService;
@@ -36,6 +34,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
@@ -46,7 +45,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 
-import javax.swing.event.MenuEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -59,7 +57,7 @@ import java.util.stream.IntStream;
 
 @Controller
 public class WorkSpaceController {
-	private final Logger logger = LogManager.getLogger(WorkSpaceController.class.getClass());
+	private final Logger logger = LogManager.getLogger(WorkSpaceController.class);
 	@FXML
 	private BorderPane mainPane;
 	@FXML 
@@ -73,8 +71,6 @@ public class WorkSpaceController {
 	@FXML 
 	private BorderPane imgHolder;
 	@FXML
-	private ListView<GrainConfig> listView;
-	@FXML
 	private ToggleButton seedButton;
 	@FXML
 	private ToggleButton clearSeedButton;
@@ -86,8 +82,6 @@ public class WorkSpaceController {
 	private ToggleButton clearShadowButton;
 	@FXML
 	private ToggleButton trashShadowButton;
-	@FXML
-	private ToggleButtonGroup toggleButtonGroup;
 	@FXML
 	private Button exportButton;
 	@FXML
@@ -180,12 +174,12 @@ public class WorkSpaceController {
 				doReSegment();
 			}
 		});
-		markerCheckBox.selectedProperty().addListener((ov,old_val, new_val)->{
-			canvas.setBothMarkerVisibleAndEnable(new_val);
-		});
-		segmentCheckBox.selectedProperty().addListener((ov,old_val, new_val)-> {
-			canvas.setOverlayShow(new_val);
-		});
+		markerCheckBox.selectedProperty().addListener((ov,old_val, new_val)->
+			canvas.setBothMarkerVisibleAndEnable(new_val)
+		);
+		segmentCheckBox.selectedProperty().addListener((ov,old_val, new_val)->
+			canvas.setOverlayShow(new_val)
+		);
 
 		exportButton.setOnAction(e->{
 			FileChooser fileChooser = new FileChooser();
@@ -458,7 +452,7 @@ public class WorkSpaceController {
 			double mPerPixel = Double.parseDouble(scaleText.getText()) / 100.0;
 			GrainResultAdapter.setScale(mPerPixel);
 		}catch (Exception e){
-			logger.error("doExport:{}", e.getMessage());
+			logger.error("doExport:{}", ExceptionUtils.getStackTrace(e));
 			showInfoAlert("Format pixel scale failed.");
 			return;
 		}
@@ -473,9 +467,8 @@ public class WorkSpaceController {
 			setEllipse(grainVO);
 			grainVO.setResults(null);
 		}catch (Exception e){
-			logger.error("doExport:{}", e.getMessage());
+			logger.error("doExport:{}", ExceptionUtils.getStackTrace(e));
 			showInfoAlert("Export ellipse failed:"+e.getLocalizedMessage());
-			return;
 		}
 	}
 	
