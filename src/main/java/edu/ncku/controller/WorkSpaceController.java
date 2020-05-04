@@ -11,6 +11,8 @@ import edu.ncku.grainsizing.export.GrainExport;
 import edu.ncku.grainsizing.export.GrainShape;
 import edu.ncku.model.grain.vo.GrainConfig;
 import edu.ncku.model.grain.vo.GrainResultVO;
+import edu.ncku.model.program.vo.ProgramConfigVO;
+import edu.ncku.service.ProgramConfigService;
 import edu.ncku.service.grain.GrainService;
 import edu.ncku.model.grain.vo.GrainVO;
 import edu.ncku.model.workspace.WorkspaceService;
@@ -42,13 +44,16 @@ import org.opencv.core.Mat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 
+import javax.swing.event.MenuEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -59,6 +64,8 @@ public class WorkSpaceController {
 	private BorderPane mainPane;
 	@FXML 
 	private MenuBar menuBar;
+	@FXML
+    private Menu recentMenu;
 	@FXML
 	private MenuItem workspaceMenuItem;
 	@FXML
@@ -125,6 +132,8 @@ public class WorkSpaceController {
 	@Autowired
 	private WorkspaceService workspaceService;
 	@Autowired
+    private ProgramConfigService programConfigService;
+	@Autowired
 	private GrainService grainService;
 	@Autowired
 	private GrainProcessing grainProcessing;
@@ -152,9 +161,12 @@ public class WorkSpaceController {
 	private PannableCanvas canvas;
 	private File workspaceFolder;
 	private GrainVO grainVO;
+	private ProgramConfigVO programConfigVO;
 
 	public void initialize() {
 		logger.info("initialize");
+		initializeConfig();
+		initializeRecentMenu();
         initializeItem();
 		initializeToggleButton();
 		initializeCanvas();
@@ -250,6 +262,21 @@ public class WorkSpaceController {
             setMarkerImage();
             doReSegment(false);
         });
+	}
+
+	private void initializeConfig() {
+		programConfigVO = programConfigService.getProgramConfig();
+	}
+
+	private void initializeRecentMenu() {
+		List<MenuItem> items = recentMenu.getItems();
+		recentMenu.getItems().remove(0, items.size());
+		Set<String> set = programConfigVO.getResentFiles();
+		for (String s:set) {
+			MenuItem m = new MenuItem(s);
+			m.setOnAction(e-> openWorkspace(m.getText()));
+			recentMenu.getItems().add(0, m);
+		}
 	}
 
 	private void initializeItem(){
@@ -375,12 +402,18 @@ public class WorkSpaceController {
 	}
 	
 	public void openWorkspace(ActionEvent ae) {
-		String workspace = selectWorkspace();
+		openWorkspace(selectWorkspace());
+	}
+
+	private void openWorkspace(String workspace) {
 		if(!workspaceService.openWorkspace(workspace))
 			return;
 		workspaceMenuItem.setDisable(true);
+		recentMenu.setDisable(true);
 		workspaceFolder = new File(workspace);
 		markerFileQueue.clearTemp(workspaceFolder);
+		programConfigService.addRecentWorkspace(programConfigVO, workspace);
+		programConfigService.saveConfig(programConfigVO);
 		grainVO = grainService.getGrainVO(workspace, Optional.empty());
 		if(grainVO==null) {
 			improtMenuItem.setDisable(false);
@@ -496,7 +529,14 @@ public class WorkSpaceController {
 	private String selectWorkspace() {
 		Stage stage = (Stage) menuBar.getScene().getWindow();
 		DirectoryChooser chooser = new DirectoryChooser();
-		File defaultDirectory = new File("/");
+		String folder = "/";
+		if (!CollectionUtils.isEmpty(programConfigVO.getResentFiles())) {
+			int count = programConfigVO.getResentFiles().size();
+			Optional<String> opt = programConfigVO.getResentFiles().stream().skip(count - 1).findFirst();
+			if (opt.isPresent() && (new File(opt.get())).isDirectory())
+				folder = opt.get();
+		}
+		File defaultDirectory = new File(folder);
 		chooser.setInitialDirectory(defaultDirectory);
 		File selectedDirectory = chooser.showDialog(stage);
 		return selectedDirectory==null ? "":selectedDirectory.getAbsolutePath();

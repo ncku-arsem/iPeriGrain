@@ -31,6 +31,11 @@
                   <MenuItem fx:id="improtMenuItem" disable="true" mnemonicParsing="false" onAction="#importGrainImage" text="Improt Image" />
             </items>
           </Menu>
+            <Menu fx:id="recentMenu" mnemonicParsing="false" text="Recent Workespace">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+              </items>
+            </Menu>
         </menus>
       </MenuBar>
    </top>
