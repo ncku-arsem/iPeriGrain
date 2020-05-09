@@ -28,6 +28,8 @@ public class GrainResultAdapter implements GrainShape{
 	private double oriY;
 
 	public GrainResultAdapter(GrainResultVO vo, GrainPointVO oriPoint) {
+		if (oriPoint == null)
+			oriPoint = new GrainPointVO(0.0, 0.0);
 		MatOfPoint points = vo.getContour();
 		Point[] pointArray = points.toArray();
 		

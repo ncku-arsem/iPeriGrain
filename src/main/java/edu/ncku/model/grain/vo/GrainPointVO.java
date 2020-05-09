@@ -1,8 +1,12 @@
 package edu.ncku.model.grain.vo;
 
 public class GrainPointVO {
-    private double x;
-    private double y;
+    private double x = 0.0;
+    private double y = 0.0;
+
+    public GrainPointVO(){
+
+    }
 
     public GrainPointVO(double x, double y) {
         this.x = x;
