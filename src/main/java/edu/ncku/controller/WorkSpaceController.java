@@ -113,6 +113,8 @@ public class WorkSpaceController {
 	@FXML
 	private CheckBox segmentCheckBox;
 	@FXML
+	private CheckBox basicCheckBox;
+	@FXML
 	private Slider alphaSlider;
 	@FXML
 	private Slider betaSlider;
@@ -179,6 +181,9 @@ public class WorkSpaceController {
 		);
 		segmentCheckBox.selectedProperty().addListener((ov,old_val, new_val)->
 			canvas.setOverlayShow(new_val)
+		);
+		basicCheckBox.selectedProperty().addListener((ov,old_val, new_val)->
+				canvas.setBasicShow(new_val)
 		);
 
 		exportButton.setOnAction(e->{
@@ -360,6 +365,7 @@ public class WorkSpaceController {
         grainProcessing.doReSegmentGrainProcessing(grainVO);
         grainService.saveImage(grainVO);
         segmentCheckBox.setSelected(setOverlay(grainVO));
+		basicCheckBox.setSelected(true);
         setMarkerImage();
         markerIndexLabel.setText("Result Index:");
 		setNextPrevious();
@@ -374,6 +380,7 @@ public class WorkSpaceController {
 		grainProcessing.doGrainProcessing(grainVO, param);
 		grainService.saveImage(grainVO);
 		segmentCheckBox.setSelected(setOverlay(grainVO));
+		basicCheckBox.setSelected(true);
 		setMarkerImage();
 		setNextPrevious();
 		setEllipse(grainVO);
@@ -402,6 +409,7 @@ public class WorkSpaceController {
 		Image image = Utils.mat2Image(grainVO.getOriginalImg());
 		canvas.initCanvas(image);
 		segmentCheckBox.setSelected(setOverlay(grainVO));
+		basicCheckBox.setSelected(true);
 		setMarkerImage();
 	}
 	
@@ -427,6 +435,7 @@ public class WorkSpaceController {
 		Image image = Utils.mat2Image(grainVO.getOriginalImg());
 		canvas.initCanvas(image);
 		segmentCheckBox.setSelected(setOverlay(grainVO));
+		basicCheckBox.setSelected(true);
 		setMarkerImage();
 	}
 	

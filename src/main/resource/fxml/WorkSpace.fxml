@@ -166,6 +166,7 @@
                                                 <Button fx:id="applyColorButton" mnemonicParsing="false" prefHeight="28.0" prefWidth="62.0" text="Apply" />
                                              </children>
                                           </HBox>
+                                          <CheckBox fx:id="basicCheckBox" mnemonicParsing="false" text="Basic Image" />
                                           <CheckBox fx:id="markerCheckBox" mnemonicParsing="false" text="Marker Overlay" />
                                           <CheckBox fx:id="segmentCheckBox" mnemonicParsing="false" text="Segment Overlay" />
                                           <Label alignment="TOP_CENTER" contentDisplay="BOTTOM" nodeOrientation="LEFT_TO_RIGHT" text="Alpha" textOverrun="CLIP">

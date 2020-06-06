@@ -185,6 +185,12 @@ public class PannableCanvas extends Pane{
 		GraphicsContext gc = shadowCanvas.getGraphicsContext2D();
 		gc.clearRect(0, 0, shadowCanvas.getWidth(), shadowCanvas.getHeight());
 	}
+
+	public void setBasicShow(boolean showBasic) {
+		if (basicCanvas == null)
+			return;
+		basicCanvas.setVisible(showBasic);
+	}
 	
 	public void setOverlayShow(boolean showOverlay) {
 		if (overlayCanvas == null)
