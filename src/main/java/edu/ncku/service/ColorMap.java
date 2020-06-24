@@ -1,7 +1,7 @@
 package edu.ncku.service;
 
 public enum ColorMap {
-	ORI(-1),
+	Gray(-1),
 	AUTUMN(0),
 	BONE(1),
 	JET(2),
@@ -14,7 +14,7 @@ public enum ColorMap {
 	HSV(9),
 	PINK(10),
 	HOT(11);
-	private ColorMap(int color) {
+	ColorMap(int color) {
 		this.color = color;
 	}
 	private int color;

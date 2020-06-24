@@ -48,10 +48,7 @@ import org.springframework.util.CollectionUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -187,33 +184,19 @@ public class WorkSpaceController {
 		);
 
 		exportButton.setOnAction(e->{
-			FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("SHP files (*.shp)", "*.shp"));
-			fileChooser.setInitialFileName("grain-export.shp");
-            Stage stage = (Stage) exportButton.getScene().getWindow();
-            File file = fileChooser.showSaveDialog(stage);
-            if(file!=null)
-				doExport(file, grainExport);
+			if (Objects.isNull(workspaceFolder))
+				return;
+			File exportFolder = new File(workspaceFolder, "export");
+			if (!exportFolder.isDirectory() && !exportFolder.mkdir())
+				return;
+			File shpFile = new File(exportFolder, "grain-export.shp");
+			doExport(shpFile, grainExport);
+			File txtFile = new File(exportFolder, "grain-export.txt");
+			doExport(txtFile, grainTextExport);
+			File ellipseFile = new File(exportFolder, "grain-export-ellipse.shp");
+			doExport(ellipseFile, grainEllipseExport);
 		});
-		exportTextButton.setOnAction(e->{
-			FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt"));
-			fileChooser.setInitialFileName("grain-export.txt");
-            Stage stage = (Stage) exportTextButton.getScene().getWindow();
-            File file = fileChooser.showSaveDialog(stage);
-            if(file!=null)
-				doExport(file, grainTextExport);
-		});
-		exportEllipseButton.setOnAction(e->{
-			FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("SHP files (*.shp)", "*.shp"));
-			fileChooser.setInitialFileName("grain-export-ellipse.shp");
-            Stage stage = (Stage) exportEllipseButton.getScene().getWindow();
-            File file = fileChooser.showSaveDialog(stage);
-            if(file!=null)
-				doExport(file, grainEllipseExport);
 
-		});
 		fitEllipseButton.setOnAction(e -> {
 			grainProcessing.doFitEllipse(grainVO);
 			setEllipse(grainVO);
