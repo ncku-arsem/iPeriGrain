@@ -222,9 +222,10 @@
                                     </Label>
                                     <FlowPane hgap="5.0" prefHeight="86.0" prefWidth="287.0" vgap="5.0">
                                        <children>
-                                          <Button fx:id="exportButton" mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="133.0" text="Grain SHP Export" />
-                                          <Button fx:id="exportTextButton" mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="110.0" text="Text Export" />
-                                          <Button fx:id="exportEllipseButton" mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="133.0" text="Ellipse SHP Export" />
+                                          <CheckBox fx:id="shpCheckBox" mnemonicParsing="false" text="SHP" />
+                                          <CheckBox fx:id="txtCheckBox" mnemonicParsing="false" text="TXT" />
+                                          <CheckBox fx:id="ellipseCheckBox" layoutX="73.0" layoutY="13.0" mnemonicParsing="false" text="Ellipse" />
+                                          <Button fx:id="exportButton" mnemonicParsing="false" onMouseClicked="#doReSegment" prefHeight="32.0" prefWidth="133.0" text="Grain Export" />
                                           <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="147.0" spacing="5.0">
                                              <children>
                                                 <Label fx:id="markerIndexLabel21" text="1 Pixel:">

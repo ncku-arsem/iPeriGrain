@@ -80,11 +80,13 @@ public class WorkSpaceController {
 	@FXML
 	private ToggleButton trashShadowButton;
 	@FXML
+	private CheckBox shpCheckBox;
+	@FXML
+	private CheckBox txtCheckBox;
+	@FXML
+	private CheckBox ellipseCheckBox;
+	@FXML
 	private Button exportButton;
-	@FXML
-	private Button exportTextButton;
-	@FXML
-	private Button exportEllipseButton;
 	@FXML
 	private Button fitEllipseButton;
 	@FXML
@@ -186,15 +188,9 @@ public class WorkSpaceController {
 		exportButton.setOnAction(e->{
 			if (Objects.isNull(workspaceFolder))
 				return;
-			File exportFolder = new File(workspaceFolder, "export");
-			if (!exportFolder.isDirectory() && !exportFolder.mkdir())
-				return;
-			File shpFile = new File(exportFolder, "grain-export.shp");
-			doExport(shpFile, grainExport);
-			File txtFile = new File(exportFolder, "grain-export.txt");
-			doExport(txtFile, grainTextExport);
-			File ellipseFile = new File(exportFolder, "grain-export-ellipse.shp");
-			doExport(ellipseFile, grainEllipseExport);
+			doExportResult(shpCheckBox, "grain-export.shp", grainExport);
+			doExportResult(txtCheckBox, "grain-export.txt", grainTextExport);
+			doExportResult(ellipseCheckBox, "grain-export-ellipse.shp", grainEllipseExport);
 		});
 
 		fitEllipseButton.setOnAction(e -> {
@@ -244,6 +240,26 @@ public class WorkSpaceController {
             setMarkerImage();
             doReSegment(false);
         });
+	}
+
+	private void doExportResult(CheckBox checkBox, String fileName, GrainExport grainExport) {
+		if (!checkBox.isSelected())
+			return;
+		File exportFolder = new File(workspaceFolder, "export");
+		if (!exportFolder.isDirectory() && !exportFolder.mkdir())
+			return;
+		File exportFile = new File(exportFolder, fileName);
+		if (exportFile.exists() && !overwriteFileConfirm(exportFile))
+			return;
+		doExport(exportFile, grainExport);
+	}
+
+	private boolean overwriteFileConfirm(File file){
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Overwrite Confirmation");
+		alert.setHeaderText("It will overwrite existing files:" + file.getName());
+		Optional<ButtonType> optional = alert.showAndWait();
+		return ButtonType.OK.equals(optional.orElse(ButtonType.NO));
 	}
 
 	private void initializeConfig() {
