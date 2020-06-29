@@ -144,8 +144,8 @@
                                           <ChoiceBox fx:id="cacheChoiceBox" prefHeight="28.0" prefWidth="66.0" />
                                           <HBox prefWidth="163.0" spacing="5.0">
                                              <children>
-                                                <Button fx:id="saveButton" layoutX="81.0" layoutY="10.0" mnemonicParsing="false" text="Save" />
-                                                <Button fx:id="restoreButton" mnemonicParsing="false" text="Restore" />
+                                                <Button fx:id="saveButton" contentDisplay="TEXT_ONLY" layoutX="81.0" layoutY="10.0" mnemonicParsing="false" text="Save" wrapText="true" />
+                                                <Button fx:id="restoreButton" mnemonicParsing="false" text="Restore" wrapText="true" />
                                              </children>
                                           </HBox>
                                        </children>
