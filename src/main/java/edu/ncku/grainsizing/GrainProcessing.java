@@ -27,9 +27,9 @@ public interface GrainProcessing {
 	Mat generateSplitMarker(GrainVO vo, TempMarkerVO splitVO);
 	/**
 	 * Called by doReSegmentGrainProcessing
-	 * @param vo
+	 * @param markerImg
 	 * @param mergeVO
 	 * @return
 	 */
-	Mat generateMergeMarker(GrainVO vo, TempMarkerVO mergeVO);
+	Mat generateMergeMarker(Mat markerImg, TempMarkerVO mergeVO);
 }

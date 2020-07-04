@@ -1,7 +1,7 @@
 package edu.ncku.service;
 
 public enum ColorMap {
-	ORI(-1),
+    Original(-1),
 	AUTUMN(0),
 	BONE(1),
 	JET(2),
