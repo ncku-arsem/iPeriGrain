@@ -252,7 +252,9 @@ public class PannableCanvas extends Pane{
 			shadowCanvas.setDisable(false);
 			shadowCanvas.setVisible(saveCanvas(shadowCanvas, shadowFile));
 		}
-		triggerDrawingAction(drawingAction);
+		setBothMarkerVisibleAndEnable(true);
+		seedCanvas.setDisable(drawingAction.equals(DrawingAction.SEED));
+		shadowCanvas.setDisable(drawingAction.equals(DrawingAction.SHADOW));
 	}
 	
 	private boolean saveCanvas(Canvas canvas, File file) {
