@@ -13,10 +13,7 @@ import org.opencv.imgproc.Imgproc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -155,11 +152,11 @@ public class GrainProcessingImplement implements GrainProcessing {
         return m;
     }
 
-    private Mat floodFillWithBlack(Mat marker, Mat floodFillImg) {
+    private Optional<Mat> floodFillWithBlack(Mat marker, Mat floodFillImg) {
         List<MatOfPoint> contours = new ArrayList<>();
         Imgproc.findContours(floodFillImg, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
         if (contours.size() == 0)
-            return marker;
+            return Optional.empty();
         Mat newMarker = marker.clone();
         Mat mask = new Mat(floodFillImg.height() + 2, floodFillImg.width() + 2, CvType.CV_8UC1);
         mask.setTo(new Scalar(0));
@@ -170,7 +167,7 @@ public class GrainProcessingImplement implements GrainProcessing {
             if (colors[0] != 0)
                 Imgproc.floodFill(newMarker, mask, seed, BLACK_COLOR);
         }
-        return newMarker;
+        return Optional.of(newMarker);
     }
 
     @Override
@@ -178,16 +175,17 @@ public class GrainProcessingImplement implements GrainProcessing {
         TempMarkerVO seedVO = tempMarkerService.getSeedMarker(vo.getConfig().getWorkspace());
 
         Mat newMarker = generateMergeMarker(vo.getOriMarkImg(), seedVO);
-        vo.setMarkImg(newMarker);
-        newMarker = generateSplitMarker(vo, seedVO);
-        vo.setMarkImg(newMarker);
+        newMarker = generateSplitMarker(newMarker, seedVO);
+
 
         TempMarkerVO shadowVO = tempMarkerService.getShadowMarker(vo.getConfig().getWorkspace());
         newMarker = generateMergeMarker(newMarker, shadowVO);
-
-        Mat shadowMat = floodFillWithBlack(newMarker, shadowVO.getTemp());
-        Core.bitwise_xor(newMarker, shadowMat, shadowMat);
-        shadowVO.setTemp(shadowMat);
+        Optional<Mat> shadowOpt = floodFillWithBlack(newMarker, shadowVO.getTemp());
+        if (shadowOpt.isPresent()) {
+            Mat shadowMat = shadowOpt.get();
+            Core.bitwise_xor(newMarker, shadowMat, shadowMat);
+            shadowVO.setTemp(shadowMat);
+        }
 
         vo.setMarkImg(newMarker);
         vo.setIndexImg(segmentGrain(vo, shadowVO));
@@ -207,10 +205,13 @@ public class GrainProcessingImplement implements GrainProcessing {
     }
 
     @Override
-    public Mat generateSplitMarker(GrainVO vo, TempMarkerVO splitVO) {
+    public Mat generateSplitMarker(Mat markerImg, TempMarkerVO splitVO) {
         if (splitVO == null || splitVO.getTemp() == null)
-            return vo.getMarkImg();
-        Mat newMarker = floodFillWithBlack(vo.getMarkImg(), splitVO.getTemp());
+            return markerImg;
+        Optional<Mat> newOpt = floodFillWithBlack(markerImg, splitVO.getTemp());
+        if (!newOpt.isPresent())
+            return markerImg;
+        Mat newMarker = newOpt.get();
         Mat resultMat = new Mat();
         Core.bitwise_or(newMarker, splitVO.getTemp(), resultMat);
         newMarker.release();

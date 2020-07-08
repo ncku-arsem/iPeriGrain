@@ -20,11 +20,11 @@ public interface GrainProcessing {
 	GrainVO enhanceToShow(GrainVO vo);
 	/**
 	 * Called by doReSegmentGrainProcessing
-	 * @param vo
+	 * @param markerImg
 	 * @param splitVO
 	 * @return 
 	 */
-	Mat generateSplitMarker(GrainVO vo, TempMarkerVO splitVO);
+	Mat generateSplitMarker(Mat markerImg, TempMarkerVO splitVO);
 	/**
 	 * Called by doReSegmentGrainProcessing
 	 * @param markerImg
