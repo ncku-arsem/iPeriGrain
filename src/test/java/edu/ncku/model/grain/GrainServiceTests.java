@@ -1,7 +1,7 @@
 package edu.ncku.model.grain;
 
-import edu.ncku.service.grain.GrainService;
 import edu.ncku.model.grain.vo.GrainVO;
+import edu.ncku.service.grain.GrainService;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

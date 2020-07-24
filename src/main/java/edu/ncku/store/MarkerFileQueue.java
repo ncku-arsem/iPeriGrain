@@ -1,19 +1,20 @@
 package edu.ncku.store;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Optional;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
-
-import static edu.ncku.store.MarkerFile.*;
+import static edu.ncku.store.MarkerFile.SEED_FILE_NAME;
+import static edu.ncku.store.MarkerFile.SHADOW_FILE_NAME;
 
 @Component
 public class MarkerFileQueue {

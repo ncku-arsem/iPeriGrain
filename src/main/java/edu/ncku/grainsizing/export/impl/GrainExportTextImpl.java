@@ -1,16 +1,12 @@
 package edu.ncku.grainsizing.export.impl;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.List;
-
 import edu.ncku.grainsizing.export.GrainExport;
 import edu.ncku.grainsizing.export.GrainShape;
 import org.springframework.stereotype.Component;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Component("textExport")

@@ -1,8 +1,7 @@
 package edu.ncku.service;
 
-import org.opencv.core.Mat;
-
 import javafx.scene.image.Image;
+import org.opencv.core.Mat;
 
 public interface ColorMapper {	
 	Image convertColor(ColorMap colorMap, Mat mat);

@@ -1,8 +1,8 @@
 package edu.ncku.model.grain.vo;
 
-import java.util.List;
-
 import org.opencv.core.Mat;
+
+import java.util.List;
 
 public class GrainVO {
 	private GrainConfig config = new GrainConfig();

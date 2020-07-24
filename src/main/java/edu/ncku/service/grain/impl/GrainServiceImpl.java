@@ -4,7 +4,6 @@ import edu.ncku.model.grain.dao.GrainDAO;
 import edu.ncku.model.grain.vo.GrainConfig;
 import edu.ncku.model.grain.vo.GrainVO;
 import edu.ncku.service.grain.GrainConfigService;
-import edu.ncku.service.grain.GrainGeoInfoService;
 import edu.ncku.service.grain.GrainService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,21 +1,19 @@
 package edu.ncku.controller;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import edu.ncku.grainsizing.export.GrainShape;
 import edu.ncku.model.grain.vo.GrainPointVO;
+import edu.ncku.model.grain.vo.GrainResultVO;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.RotatedRect;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
-
-import edu.ncku.grainsizing.export.GrainShape;
-import edu.ncku.model.grain.vo.GrainResultVO;
+import java.util.LinkedList;
+import java.util.List;
 
 public class GrainResultAdapter implements GrainShape{
 	private static double SCALE = 1.0/100.0;

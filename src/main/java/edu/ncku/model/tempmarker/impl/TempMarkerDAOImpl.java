@@ -1,7 +1,7 @@
 package edu.ncku.model.tempmarker.impl;
 
-import edu.ncku.model.tempmarker.vo.TempMarkerVO;
 import edu.ncku.model.tempmarker.dao.TempMarkerDAO;
+import edu.ncku.model.tempmarker.vo.TempMarkerVO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.opencv.core.Mat;

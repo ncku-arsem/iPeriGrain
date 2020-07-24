@@ -1,13 +1,12 @@
 package edu.ncku.service.impl;
 
-import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
-import org.springframework.stereotype.Component;
-
 import edu.ncku.Utils;
 import edu.ncku.service.ColorMap;
 import edu.ncku.service.ColorMapper;
 import javafx.scene.image.Image;
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ColorMapperImpl implements ColorMapper{

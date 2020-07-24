@@ -1,17 +1,16 @@
 package edu.ncku.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
+import edu.ncku.Utils;
+import edu.ncku.service.MarkerRemover;
+import javafx.scene.image.Image;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 import org.springframework.stereotype.Component;
 
-import edu.ncku.Utils;
-import edu.ncku.service.MarkerRemover;
-import javafx.scene.image.Image;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @Component
 public class MarkerRemoverImpl implements MarkerRemover {

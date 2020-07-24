@@ -1,12 +1,8 @@
 package edu.ncku.model.grain;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import edu.ncku.model.grain.dao.GrainConfigDAO;
 import edu.ncku.model.grain.vo.GrainConfig;
 import edu.ncku.model.grain.vo.GrainStatus;
-import edu.ncku.model.grain.vo.GrainVO;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,6 +10,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)

@@ -1,8 +1,8 @@
 package edu.ncku.service.grain.impl;
 
 import com.google.gson.Gson;
-import edu.ncku.service.grain.GrainGeoInfoService;
 import edu.ncku.model.grain.vo.GrainPointVO;
+import edu.ncku.service.grain.GrainGeoInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 
 @Service

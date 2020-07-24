@@ -1,7 +1,7 @@
 package edu.ncku.model.grain.impl;
 
-import edu.ncku.model.grain.vo.GrainConfig;
 import edu.ncku.model.grain.dao.GrainDAO;
+import edu.ncku.model.grain.vo.GrainConfig;
 import edu.ncku.model.grain.vo.GrainVO;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -11,7 +11,7 @@ import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.File;
 
 @Component
 public class GrainDAOImpl implements GrainDAO {
