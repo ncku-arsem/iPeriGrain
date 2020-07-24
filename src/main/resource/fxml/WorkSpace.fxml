@@ -28,7 +28,7 @@
           <Menu mnemonicParsing="false" text="File">
             <items>
                   <MenuItem fx:id="workspaceMenuItem" mnemonicParsing="false" onAction="#openWorkspace" text="Open Workspace" />
-                  <MenuItem fx:id="improtMenuItem" disable="true" mnemonicParsing="false" onAction="#importGrainImage" text="Improt Image" />
+                  <MenuItem fx:id="improtMenuItem" disable="true" mnemonicParsing="false" onAction="#importGrainImage" text="Import Image" />
             </items>
           </Menu>
             <Menu fx:id="recentMenu" mnemonicParsing="false" text="Recent Workespace">
