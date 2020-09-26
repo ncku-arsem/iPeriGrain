@@ -36,6 +36,11 @@ public class GrainExportEllipseImpl implements GrainExport {
         SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
         builder.setName("Grains");
         builder.add("shape", Polygon.class);
+		builder.add("centerX", String.class);
+		builder.add("centerY", String.class);
+		builder.add("a-axis", Double.class);
+		builder.add("b-axis", Double.class);
+		builder.add("rotation of a-axis", Double.class);
         final SimpleFeatureType GRAINS = builder.buildFeatureType();
         return GRAINS;
     }
@@ -54,6 +59,11 @@ public class GrainExportEllipseImpl implements GrainExport {
 		    AffineTransformation trans = AffineTransformation.rotationInstance(shape.getAngle()*PI/180.0, shape.getCenterX(), shape.getCenterY());
 		    ellipse.apply(trans);
 			featureBuilder.add(ellipse);
+			featureBuilder.add(shape.getCenterX());
+			featureBuilder.add(shape.getCenterY());
+			featureBuilder.add(shape.getMajorAxis());
+			featureBuilder.add(shape.getMinorAxis());
+			featureBuilder.add(shape.getAngle());
             collection.add(featureBuilder.buildFeature(null));
 		}
 		File newFile = new File(target);

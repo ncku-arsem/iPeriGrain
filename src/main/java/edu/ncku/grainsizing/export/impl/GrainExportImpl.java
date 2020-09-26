@@ -34,9 +34,9 @@ public class GrainExportImpl implements GrainExport {
         builder.add("shape", Polygon.class);
         builder.add("centerX", String.class);
         builder.add("centerY", String.class);
-        builder.add("major axis", Double.class);
-        builder.add("minor axis", Double.class);
-        builder.add("angle", Double.class);
+        builder.add("a-axis", Double.class);
+        builder.add("b-axis", Double.class);
+        builder.add("rotation of a-axis", Double.class);
         // build the type
         final SimpleFeatureType GRAINS = builder.buildFeatureType();
         return GRAINS;

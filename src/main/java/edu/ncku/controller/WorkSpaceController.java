@@ -34,6 +34,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -79,12 +80,6 @@ public class WorkSpaceController {
 	private ToggleButton clearShadowButton;
 	@FXML
 	private ToggleButton trashShadowButton;
-	@FXML
-	private CheckBox shpCheckBox;
-	@FXML
-	private CheckBox txtCheckBox;
-	@FXML
-	private CheckBox ellipseCheckBox;
 	@FXML
 	private Button exportButton;
 	@FXML
@@ -188,9 +183,14 @@ public class WorkSpaceController {
 		exportButton.setOnAction(e->{
 			if (Objects.isNull(workspaceFolder))
 				return;
-			doExportResult(shpCheckBox, "grain-export.shp", grainExport);
-			doExportResult(txtCheckBox, "grain-export.txt", grainTextExport);
-			doExportResult(ellipseCheckBox, "grain-export-ellipse.shp", grainEllipseExport);
+			if (StringUtils.isBlank(scaleText.getText())) {
+				showInfoAlert("Please enter the scale");
+				scaleText.requestFocus();
+				return;
+			}
+			doExportResult("perimeter.shp", grainExport);
+			doExportResult("par_ellipse.txt", grainTextExport);
+			doExportResult("ellipse.shp", grainEllipseExport);
 		});
 
 		fitEllipseButton.setOnAction(e -> {
@@ -242,9 +242,7 @@ public class WorkSpaceController {
         });
 	}
 
-	private void doExportResult(CheckBox checkBox, String fileName, GrainExport grainExport) {
-		if (!checkBox.isSelected())
-			return;
+	private void doExportResult(String fileName, GrainExport grainExport) {
 		File exportFolder = new File(workspaceFolder, "export");
 		if (!exportFolder.isDirectory() && !exportFolder.mkdir())
 			return;
