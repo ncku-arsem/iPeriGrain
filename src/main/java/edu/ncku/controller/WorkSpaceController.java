@@ -401,6 +401,9 @@ public class WorkSpaceController {
 		grainVO = grainService.getGrainVO(workspaceFolder.getAbsolutePath(), oriImgOptional);
 		if(grainVO == null)
 			return;
+		if (grainVO.getConfig() != null && grainVO.getConfig() != null && grainVO.getConfig().getOriPoint() != null) {
+			scaleText.setText(String.valueOf(grainVO.getConfig().getOriPoint().getScale() * 100));
+		}
 
 		improtMenuItem.setDisable(true);
 		Image image = Utils.mat2Image(grainVO.getOriginalImg());
@@ -427,6 +430,9 @@ public class WorkSpaceController {
 		if(grainVO==null) {
 			improtMenuItem.setDisable(false);
 			return;
+		}
+		if (grainVO.getConfig() != null && grainVO.getConfig() != null && grainVO.getConfig().getOriPoint() != null) {
+			scaleText.setText(String.valueOf(grainVO.getConfig().getOriPoint().getScale() * 100));
 		}
 		improtMenuItem.setDisable(true);
 		Image image = Utils.mat2Image(grainVO.getOriginalImg());

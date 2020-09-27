@@ -16,7 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class GrainResultAdapter implements GrainShape{
-	private static double SCALE = 1.0/100.0;
+	private static double SCALE = 0.01;
 	public static void setScale(double mPerPixel){
 		SCALE = mPerPixel;
 	}
@@ -26,8 +26,11 @@ public class GrainResultAdapter implements GrainShape{
 	private double oriY;
 
 	public GrainResultAdapter(GrainResultVO vo, GrainPointVO oriPoint) {
-		if (oriPoint == null)
-			oriPoint = new GrainPointVO(0.0, 0.0);
+		if (oriPoint == null) {
+			oriPoint = new GrainPointVO(0.0, 0.0, 0.01);
+		} else {
+			GrainResultAdapter.setScale(oriPoint.getScale());
+		}
 		MatOfPoint points = vo.getContour();
 		Point[] pointArray = points.toArray();
 		
