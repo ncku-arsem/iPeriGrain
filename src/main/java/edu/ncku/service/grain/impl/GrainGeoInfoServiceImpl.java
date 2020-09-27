@@ -32,14 +32,14 @@ public class GrainGeoInfoServiceImpl implements GrainGeoInfoService {
 
     public GrainPointVO getOriPoint(File imgPath) {
         if (!imgPath.canRead() || imgPath.isDirectory())
-            return new GrainPointVO(0.0, 0.0, 0.01);
+            return new GrainPointVO(0.0, 0.0, null);
         if (!StringUtils.startsWith(FileUtils.getFileExtension(imgPath), "tif")) {
-            return new GrainPointVO(0.0, 0.0, 0.01);
+            return new GrainPointVO(0.0, 0.0, null);
         }
         File resultFile = new File("result.json");
 
         if (resultFile.exists() && !resultFile.delete())
-            return new GrainPointVO(0.0, 0.0, 0.01);
+            return new GrainPointVO(0.0, 0.0, null);
         try {
             String jarPath = System.getProperty("user.dir")+File.separator+jarFolder+File.separator+jarName;
             String command = String.format(COMMAND_PATTERN, jarPath, imgPath.getAbsolutePath(), resultFile.getAbsolutePath());
@@ -58,6 +58,6 @@ public class GrainGeoInfoServiceImpl implements GrainGeoInfoService {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-        return new GrainPointVO(0.0, 0.0, 0.01);
+        return new GrainPointVO(0.0, 0.0, null);
     }
 }

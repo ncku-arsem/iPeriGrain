@@ -23,6 +23,7 @@ import edu.ncku.store.MarkerFileStore;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -240,6 +241,7 @@ public class WorkSpaceController {
             setMarkerImage();
             doReSegment(false);
         });
+		scaleText.setAlignment(Pos.CENTER);
 	}
 
 	private void doExportResult(String fileName, GrainExport grainExport) {
@@ -401,7 +403,10 @@ public class WorkSpaceController {
 		grainVO = grainService.getGrainVO(workspaceFolder.getAbsolutePath(), oriImgOptional);
 		if(grainVO == null)
 			return;
-		if (grainVO.getConfig() != null && grainVO.getConfig() != null && grainVO.getConfig().getOriPoint() != null) {
+		if (Objects.nonNull(grainVO.getConfig())
+				&& Objects.nonNull(grainVO.getConfig())
+				&& Objects.nonNull(grainVO.getConfig().getOriPoint())
+				&& Objects.nonNull(grainVO.getConfig().getOriPoint().getScale())) {
 			scaleText.setText(String.valueOf(grainVO.getConfig().getOriPoint().getScale() * 100));
 		}
 
@@ -431,7 +436,10 @@ public class WorkSpaceController {
 			improtMenuItem.setDisable(false);
 			return;
 		}
-		if (grainVO.getConfig() != null && grainVO.getConfig() != null && grainVO.getConfig().getOriPoint() != null) {
+		if (Objects.nonNull(grainVO.getConfig())
+				&& Objects.nonNull(grainVO.getConfig())
+				&& Objects.nonNull(grainVO.getConfig().getOriPoint())
+				&& Objects.nonNull(grainVO.getConfig().getOriPoint().getScale())) {
 			scaleText.setText(String.valueOf(grainVO.getConfig().getOriPoint().getScale() * 100));
 		}
 		improtMenuItem.setDisable(true);
@@ -463,6 +471,8 @@ public class WorkSpaceController {
 		try {
 			double mPerPixel = Double.parseDouble(scaleText.getText()) / 100.0;
 			GrainResultAdapter.setScale(mPerPixel);
+			grainVO.getConfig().getOriPoint().setScale(mPerPixel);
+			grainService.saveConfig(grainVO);
 		}catch (Exception e){
 			logger.error("doExport:{}", ExceptionUtils.getStackTrace(e));
 			showInfoAlert("Format pixel scale failed.");

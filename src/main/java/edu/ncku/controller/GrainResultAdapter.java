@@ -27,8 +27,8 @@ public class GrainResultAdapter implements GrainShape{
 
 	public GrainResultAdapter(GrainResultVO vo, GrainPointVO oriPoint) {
 		if (oriPoint == null) {
-			oriPoint = new GrainPointVO(0.0, 0.0, 0.01);
-		} else {
+			oriPoint = new GrainPointVO(0.0, 0.0, null);
+		} else if (oriPoint.getScale() != null){
 			GrainResultAdapter.setScale(oriPoint.getScale());
 		}
 		MatOfPoint points = vo.getContour();

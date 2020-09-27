@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -45,6 +46,11 @@ public class GrainServiceImpl implements GrainService {
 	@Override
 	public void saveImage(GrainVO vo) {
 		grainDAO.saveGrainVO(vo);
+	}
+
+	public void saveConfig(GrainVO vo) {
+		if (Objects.nonNull(vo) && Objects.nonNull(vo.getConfig()))
+			configService.saveGrainConfig(vo.getConfig());
 	}
 	
 	private Mat convertTo8UC1(Mat mat) {

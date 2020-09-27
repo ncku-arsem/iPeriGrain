@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface GrainService {
 	GrainVO getGrainVO(String workspace, Optional<File> imgOptional);
 	void saveImage(GrainVO vo);
+	void saveConfig(GrainVO vo);
 }
