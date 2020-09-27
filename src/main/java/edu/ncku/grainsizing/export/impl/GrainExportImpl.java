@@ -36,7 +36,7 @@ public class GrainExportImpl implements GrainExport {
         builder.add("centerY", String.class);
         builder.add("a-axis", Double.class);
         builder.add("b-axis", Double.class);
-        builder.add("rotation of a-axis", Double.class);
+        builder.add("a-axis ang", Double.class);
         // build the type
         final SimpleFeatureType GRAINS = builder.buildFeatureType();
         return GRAINS;
