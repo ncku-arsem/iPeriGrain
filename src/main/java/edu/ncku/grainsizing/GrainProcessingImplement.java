@@ -70,7 +70,7 @@ public class GrainProcessingImplement implements GrainProcessing {
     public Mat generateMarker(GrainVO vo) {
         Mat grainMark = new Mat();
         Mat dis8bit = this.convertTo8UC1(vo.getDisMapImg());
-        Imgproc.threshold(dis8bit, grainMark, 20, 255, Imgproc.THRESH_BINARY);
+        Imgproc.threshold(dis8bit, grainMark, 25, 255, Imgproc.THRESH_BINARY);
         dis8bit.release();
         return grainMark;
     }

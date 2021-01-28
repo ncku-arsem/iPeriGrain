@@ -30,10 +30,6 @@ public class GrainConfigDAOImpl implements GrainConfigDAO {
 		return vo;
 	}
 
-	private File getConfigFile(String workspace) {
-		return new File(getFileFormatString(workspace, GRAIN_CONFIG));
-	}
-
 	@Override
 	public GrainConfig getGrainConfig(String workspace) {
 		File configFile = getConfigFile(workspace);
@@ -46,6 +42,7 @@ public class GrainConfigDAOImpl implements GrainConfigDAO {
 			config = gson.fromJson(fr, GrainConfig.class);
 			if (config == null || StringUtils.isBlank(config.getWorkspace()))
 				return null;
+			config.setWorkspace(workspace);
 		} catch (IOException e) {
 			throw new RuntimeException("Can't read config file.");
 		}
@@ -66,6 +63,10 @@ public class GrainConfigDAOImpl implements GrainConfigDAO {
 		} finally {
 			try {if(fw!=null) fw.close();} catch (IOException ignored) {}
 		}
+	}
+
+	private File getConfigFile(String workspace) {
+		return new File(getFileFormatString(workspace, GRAIN_CONFIG));
 	}
 
 	private String getFileFormatString(String workspace, String fileName) {
