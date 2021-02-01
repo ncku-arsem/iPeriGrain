@@ -1,0 +1,9 @@
+/target/
+/.project
+/.classpath
+/bin/
+/.idea/
+/GrainSizing.iml
+/src/main/main.iml
+/logs
+/geoinfo/

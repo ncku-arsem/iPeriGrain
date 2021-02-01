@@ -1,0 +1,34 @@
+package edu.ncku.grainsizing;
+
+import edu.ncku.model.grain.vo.GrainVO;
+import edu.ncku.model.tempmarker.vo.TempMarkerVO;
+import org.opencv.core.Mat;
+
+public interface GrainProcessing {
+	
+	void doGrainProcessing(GrainVO vo, GrainParam param);
+	Mat smoothGrain(GrainVO vo);
+	Mat identifyNonGrain(GrainVO vo, GrainParam grainParam);
+	Mat generateDistanceMap(GrainVO vo);
+	Mat generateMarker(GrainVO vo);
+	Mat segmentGrain(GrainVO vo, TempMarkerVO shadowVO);
+	GrainVO doReSegmentGrainProcessing(GrainVO vo);
+	GrainVO doFitEllipse(GrainVO vo);
+	void findGrainContours(GrainVO vo);
+	void fitEllipse(GrainVO vo);
+	GrainVO enhanceToShow(GrainVO vo);
+	/**
+	 * Called by doReSegmentGrainProcessing
+	 * @param markerImg
+	 * @param splitVO
+	 * @return 
+	 */
+	Mat generateSplitMarker(Mat markerImg, TempMarkerVO splitVO);
+	/**
+	 * Called by doReSegmentGrainProcessing
+	 * @param markerImg
+	 * @param mergeVO
+	 * @return
+	 */
+	Mat generateMergeMarker(Mat markerImg, TempMarkerVO mergeVO);
+}
