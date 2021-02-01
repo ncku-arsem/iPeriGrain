@@ -1,6 +1,8 @@
 # iPeriGrain
 The manual of iPeriGrain can be found in https://hackmd.io/@IPeriGrain/iPeriGrain 
 
+Download iPeriGrain here: https://github.com/ncku-arsem/iPeriGrain/releases/download/v0.9.1/grain-sizing.zip
+
 The reference paper: [paper]  
 
 The data we use in the reference paper: 
