@@ -6,7 +6,7 @@ Download iPeriGrain here: https://github.com/ncku-arsem/iPeriGrain/releases/down
 The reference paper is currently submitted to Earth Science Informatics for peer-review.
 
 The images and results shown in the reference paper and the manual are available for download: 
-  1. Optiacl image (BASEGRAIN): https://github.com/ncku-arsem/iPeriGrain/releases/download/DEM_example/iPeriGrain_DEM.zip  
-  2. DEM image: https://github.com/ncku-arsem/iPeriGrain/releases/download/DEM_example/iPeriGrain_DEM.zip 
+  1. Optiacl image (BASEGRAIN): https://github.com/ncku-arsem/iPeriGrain/releases/download/Optical_example/iPeriGrain_optical.zip 
+  3. DEM image: https://github.com/ncku-arsem/iPeriGrain/releases/download/DEM_example/iPeriGrain_DEM.zip 
 
 We thank Dr. Martin Detert for permission to include the optical image in the distribution of iPeriGrain.
